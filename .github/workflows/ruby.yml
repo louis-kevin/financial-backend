@@ -17,9 +17,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    container:
-      image: node:10.18-jessie
-
     services:
       db:
         image: postgres
