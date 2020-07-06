@@ -153,8 +153,10 @@ RSpec.describe "Api::User", type: :request do
         @user_config.save
         expect(@user.configured?).to be_truthy
 
+        day_list = (1..(@user_config.all_days? ? 20 : 31))
+
         @data = {
-          day: (1..31).reject { |i| i == @user_config.day }.sample,
+          day: day_list.reject { |i| i == @user_config.day }.sample,
           day_type: @user_config.all_days? ? :work_day : :all_days,
           income: @user_config.income.to_f + 1,
           income_option: @user_config.next_work_day? ? :previous_day : :next_work_day,
@@ -162,6 +164,7 @@ RSpec.describe "Api::User", type: :request do
         }
 
         put_with_token api_user_settings_url, @data
+
 
         expect(response).to have_http_status(:ok)
 
@@ -187,6 +190,8 @@ RSpec.describe "Api::User", type: :request do
         expect(data["income_cents"].to_f / 100).to eq @user_config.income.to_f
         expect(data["income_option"]).to eq @user_config.income_option.to_s
         expect(data["work_in_holidays"]).to eq @user_config.work_in_holidays
+
+
       end
       it "when creating without income" do
         @data = {
