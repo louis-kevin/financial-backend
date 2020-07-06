@@ -145,7 +145,7 @@ RSpec.describe "Api::User", type: :request do
         expect(data).to include "day", "day_type", "income_cents", "income_option", "work_in_holidays"
         expect(data["day"]).to eq @data[:day]
         expect(data["day_type"]).to eq @data[:day_type].to_s
-        expect(data["income_cents"].to_f / 100).to eq @data[:income].to_f
+        expect(data["income_cents"]).to eq @data[:income].cents
         expect(data["income_option"]).to eq @data[:income_option].to_s
         expect(data["work_in_holidays"]).to eq @data[:work_in_holidays]
       end
@@ -173,13 +173,13 @@ RSpec.describe "Api::User", type: :request do
 
         expect(data["day"]).not_to eq @user_config.day
         expect(data["day_type"]).not_to eq @user_config.day_type
-        expect(data["income_cents"].to_f / 100).not_to eq @user_config.income.to_f
+        expect(data["income_cents"].to_f).not_to eq @user_config.income.cents
         expect(data["income_option"]).not_to eq @user_config.income_option.to_s
         expect(data["work_in_holidays"]).not_to eq @user_config.work_in_holidays
 
         expect(data["day"]).to eq @data[:day]
         expect(data["day_type"]).to eq @data[:day_type].to_s
-        expect(data["income_cents"].to_f.to_i).to eq (@data[:income].to_f * 100).to_i
+        expect(data["income_cents"]).to eq @data[:income].cents
         expect(data["income_option"]).to eq @data[:income_option].to_s
         expect(data["work_in_holidays"]).to eq @data[:work_in_holidays]
 
@@ -187,7 +187,7 @@ RSpec.describe "Api::User", type: :request do
 
         expect(data["day"]).to eq @user_config.day
         expect(data["day_type"]).to eq @user_config.day_type
-        expect(data["income_cents"].to_f / 100).to eq @user_config.income.to_f
+        expect(data["income_cents"]).to eq @user_config.income.cents
         expect(data["income_option"]).to eq @user_config.income_option.to_s
         expect(data["work_in_holidays"]).to eq @user_config.work_in_holidays
 
