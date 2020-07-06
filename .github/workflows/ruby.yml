@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: ruby:2.6.3
+      image: node:10.18-jessie
 
     services:
       db:
