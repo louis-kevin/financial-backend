@@ -1,0 +1,59 @@
+module Api
+  class ApplicationController < ActionController::API
+    AUTHORIZATION_HEADER_KEY = 'authorization'
+
+    #noinspection RubyResolve
+    before_action :authenticate_request
+    attr_reader :current_user
+
+    private
+
+    def authenticate_request
+      headers = request.headers
+
+      token = headers[AUTHORIZATION_HEADER_KEY]
+
+      return not_authorized unless token.present?
+
+      @current_user = User.find_by_jwt_token token
+
+      not_authorized unless @current_user.present?
+    end
+
+    def not_authorized
+      render_json({}, :unauthorized)
+    end
+
+    def invalid_messages(errors)
+      errors = errors.map do |k, v|
+        if v.is_a? Array
+          v = v[0]
+        end
+        [k, v]
+      end
+      render_json errors.to_h, :unprocessable_entity
+    end
+
+    def render_json(data = {}, status = :ok)
+      render json: data,
+             status: status
+    end
+
+    # Needs to be a Kaminari Paginator
+    def render_pagination(results)
+      out_of_bounds = results.total_count == 0 || results.last_page?
+
+      response = {
+        data: results.map {|item| yield(item) },
+        total: results.total_count,
+        page: results.current_page,
+        next_page: results.next_page,
+        prev_page: results.prev_page,
+        needs_load_more: !out_of_bounds,
+      }
+
+      render_json response
+    end
+  end
+
+end
