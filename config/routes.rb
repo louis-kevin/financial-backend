@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     end
 
     namespace :user do
+      get '/me', action: :me
       put '', action: :update
       put '/settings', action: :settings
     end

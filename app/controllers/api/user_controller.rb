@@ -3,6 +3,10 @@ class Api::UserController < Api::ApplicationController
 
   def dashboard; end
 
+  def me
+    render_json user_as_json current_user
+  end
+
   def update
     data = update_params
 

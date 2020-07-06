@@ -4,7 +4,7 @@ module RequestHelperMethods
     { authorization: "Bearer #{token}" }
   end
 
-  def get_with_token(url, params, headers = {})
+  def get_with_token(url, params = {}, headers = {})
     get url, params: params, headers: authorization_header.merge(headers)
     expect(response.content_type).to eq("application/json; charset=utf-8")
   end

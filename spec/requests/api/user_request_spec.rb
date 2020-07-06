@@ -1,6 +1,30 @@
 require 'rails_helper'
 
 RSpec.describe "Api::User", type: :request do
+  describe 'GET #me' do
+    before(:each) do
+      @user = create(:user)
+    end
+
+    it 'should return user data' do
+      get_with_token api_user_me_url
+
+      expect(response).to have_http_status(:ok)
+
+      data = JSON.parse(response.body)
+      expect(data["id"]).to eq @user.id
+      expect(data["name"]).to eq @user.name
+      expect(data["email"]).to eq @user.email
+    end
+
+    it 'should response with 401' do
+      get api_user_me_url
+
+      expect(response).to have_http_status(:unauthorized)
+
+    end
+  end
+
   describe 'PUT #update' do
     before(:each) do
       @user = create(:user, password: 12345678.to_s)
