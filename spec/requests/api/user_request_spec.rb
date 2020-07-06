@@ -121,6 +121,7 @@ RSpec.describe "Api::User", type: :request do
     before(:each) do
       @user = create(:user)
       @user_config = build(:user_config, user: @user)
+      @day_list = (1..(@user_config.all_days? ? 20 : 31))
     end
     context 'should save and respond with user config data' do
       it "when creating" do
@@ -153,10 +154,10 @@ RSpec.describe "Api::User", type: :request do
         @user_config.save
         expect(@user.configured?).to be_truthy
 
-        day_list = (1..(@user_config.all_days? ? 20 : 31))
+
 
         @data = {
-          day: day_list.reject { |i| i == @user_config.day }.sample,
+          day: @day_list.reject { |i| i == @user_config.day }.sample,
           day_type: @user_config.all_days? ? :work_day : :all_days,
           income: @user_config.income.to_f + 1,
           income_option: @user_config.next_work_day? ? :previous_day : :next_work_day,
@@ -195,7 +196,7 @@ RSpec.describe "Api::User", type: :request do
       end
       it "when creating without income" do
         @data = {
-          day: (1..31).reject { |i| i == @user_config.day }.sample,
+          day: @day_list.reject { |i| i == @user_config.day }.sample,
           day_type: @user_config.all_days? ? :work_day : :all_days,
           income_option: @user_config.next_work_day? ? :previous_day : :next_work_day,
           work_in_holidays: !@user_config.work_in_holidays
@@ -215,7 +216,7 @@ RSpec.describe "Api::User", type: :request do
     context "should response with error messages" do
       before(:each) do
         @data = {
-          day: (1..20).reject { |i| i == @user_config.day }.sample,
+          day: @day_list.reject { |i| i == @user_config.day }.sample,
           day_type: @user_config.all_days? ? :work_day : :all_days,
           income: @user_config.income.to_f + 1,
           income_option: @user_config.next_work_day? ? :previous_day : :next_work_day,
