@@ -14,7 +14,7 @@ module JwtAuthenticable
 
 
   def generate_jwt_token
-    payload = {id: id}
+    payload = { id: id }
     JsonWebToken.encode payload
   end
 end

@@ -274,7 +274,7 @@ RSpec.describe "Api::AccountController", type: :request do
 
     context 'should return error' do
       it 'when id does not exists' do
-        destroy_request( 'wrong_id' , :not_found)
+        destroy_request('wrong_id', :not_found)
       end
 
       it 'when id does not belongs to user' do

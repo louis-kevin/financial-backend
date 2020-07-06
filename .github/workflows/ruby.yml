@@ -20,39 +20,40 @@ jobs:
     env:
       RAILS_ENV: test
       DATABASE_HOST: localhost
+      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
     steps:
-    - name: Setup Redis
-      uses: zhulik/redis-action@1.1.0
+      - name: Setup Redis
+        uses: zhulik/redis-action@1.1.0
 
-    - name: Setup PostgreSQL
-      uses: Harmon758/postgresql-action@v1.0.0
-      with:
-        postgresql user: postgres
-        postgresql password: postgres
+      - name: Setup PostgreSQL
+        uses: Harmon758/postgresql-action@v1.0.0
+        with:
+          postgresql user: postgres
+          postgresql password: postgres
 
-    - name: Checking out Code
-      uses: actions/checkout@v2
+      - name: Checking out Code
+        uses: actions/checkout@v2
 
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
-      with:
-        ruby-version: 2.6.3
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
+        with:
+          ruby-version: 2.6.3
 
-    - uses: actions/cache@v2
-      name: Fetching cache for bundle
-      with:
-        path: vendor/bundle
-        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-gems-
+      - uses: actions/cache@v2
+        name: Fetching cache for bundle
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
 
-    - name: Bundle Install
-      run: |
-        bundle config path vendor/bundle
-        bundle install
+      - name: Bundle Install
+        run: |
+          bundle config path vendor/bundle
+          bundle install
 
-    - name: Setup Database
-      run: bundler exec rake db:create db:test:prepare RAILS_ENV=test
+      - name: Setup Database
+        run: bundler exec rake db:create db:test:prepare RAILS_ENV=test
 
-    - name: Run Tests
-      run: bundler exec rspec
+      - name: Run Tests
+        run: bundler exec rspec

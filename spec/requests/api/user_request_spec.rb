@@ -155,7 +155,6 @@ RSpec.describe "Api::User", type: :request do
         expect(@user.configured?).to be_truthy
 
 
-
         @data = {
           day: @day_list.reject { |i| i == @user_config.day }.sample,
           day_type: @user_config.all_days? ? :work_day : :all_days,

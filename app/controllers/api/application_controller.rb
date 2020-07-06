@@ -44,7 +44,7 @@ module Api
       out_of_bounds = results.total_count == 0 || results.last_page?
 
       response = {
-        data: results.map {|item| yield(item) },
+        data: results.map { |item| yield(item) },
         total: results.total_count,
         page: results.current_page,
         next_page: results.next_page,

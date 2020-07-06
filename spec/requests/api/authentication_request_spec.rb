@@ -22,7 +22,7 @@ RSpec.describe "Api::AuthenticationController", type: :request do
 
     context "should response with error messages" do
       it 'when has wrong email' do
-        post api_login_url, params: {email: "wrong@email.com"}
+        post api_login_url, params: { email: "wrong@email.com" }
 
         expect(response.content_type).to eq("application/json; charset=utf-8")
         expect(response).to have_http_status(:unprocessable_entity)
@@ -32,7 +32,7 @@ RSpec.describe "Api::AuthenticationController", type: :request do
         expect(data).to include "email"
       end
       it 'when has the right email but wrong password' do
-        data = {email: @user.email, password: 'wrong_password'}
+        data = { email: @user.email, password: 'wrong_password' }
 
         post api_login_url, params: data
 
@@ -160,7 +160,7 @@ RSpec.describe "Api::AuthenticationController", type: :request do
       it "do not generate reset_password_token neither queue mailer job" do
         expect(enqueued_jobs.size).to eq 0
 
-        post api_reset_password_url, params: {email: 'wrong@email.com'}
+        post api_reset_password_url, params: { email: 'wrong@email.com' }
 
         @user.reload
 

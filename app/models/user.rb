@@ -5,7 +5,7 @@ class User < ApplicationRecord
 
   validates :name, presence: true
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :password, presence: true, length: { minimum: 6 }, :if => lambda{ new_record? || !password.nil? }
+  validates :password, presence: true, length: { minimum: 6 }, :if => lambda { new_record? || !password.nil? }
 
   has_many :accounts, dependent: :destroy
   has_many :bills, through: :accounts
