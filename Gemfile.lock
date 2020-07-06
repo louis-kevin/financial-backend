@@ -91,6 +91,7 @@ GEM
       activesupport (>= 4.2.0)
     i18n (1.8.3)
       concurrent-ruby (~> 1.0)
+    json (2.3.1)
     jwt (2.2.1)
     kaminari (1.2.1)
       activesupport (>= 4.1.0)
@@ -202,10 +203,11 @@ GEM
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
       redis (>= 4.2.0)
-    simplecov (0.18.5)
+    simplecov (0.17.1)
       docile (~> 1.1)
-      simplecov-html (~> 0.11)
-    simplecov-html (0.12.2)
+      json (>= 1.8, < 3)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.2)
     spring (2.1.0)
     spring-watcher-listen (2.0.1)
       listen (>= 2.7, < 4.0)
@@ -251,7 +253,7 @@ DEPENDENCIES
   rspec-rails (~> 4.0.0)
   scout_apm
   sidekiq
-  simplecov
+  simplecov (< 0.18)
   spring
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data
