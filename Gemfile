@@ -33,6 +33,12 @@ gem 'money-rails'
 
 gem 'kaminari'
 
+gem 'newrelic_rpm'
+
+gem 'bugsnag'
+
+gem 'scout_apm'
+
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails', '~> 4.0.0'
