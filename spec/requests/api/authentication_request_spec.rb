@@ -7,17 +7,42 @@ RSpec.describe "Api::AuthenticationController", type: :request do
 
       @user = create(:user, password: @password)
     end
-    it "should response with user data and token" do
+    context "should response with user data and token" do
+      it 'with config nil' do
+        post api_login_url, params: { email: @user.email, password: @password }
 
-      post api_login_url, params: { email: @user.email, password: @password }
+        expect(response.content_type).to eq("application/json; charset=utf-8")
+        expect(response).to have_http_status(:ok)
+        data = JSON.parse(response.body)
+        expect(data).to include "id", "name", "email", "token"
+        expect(data).not_to include "config"
+        expect(data["id"]).to eq @user.id
+        expect(data["name"]).to eq @user.name
+        expect(data["email"]).to eq @user.email
+      end
 
-      expect(response.content_type).to eq("application/json; charset=utf-8")
-      expect(response).to have_http_status(:ok)
-      data = JSON.parse(response.body)
-      expect(data).to include "id", "name", "email", "token"
-      expect(data["id"]).to eq @user.id
-      expect(data["name"]).to eq @user.name
-      expect(data["email"]).to eq @user.email
+      it 'with config fulfilled' do
+        @user_config = create(:user_config, user: @user)
+
+        post api_login_url, params: { email: @user.email, password: @password }
+
+        expect(response.content_type).to eq("application/json; charset=utf-8")
+        expect(response).to have_http_status(:ok)
+        data = JSON.parse(response.body)
+        expect(data).to include "id", "name", "email", "token", "config"
+        expect(data["id"]).to eq @user.id
+        expect(data["name"]).to eq @user.name
+        expect(data["email"]).to eq @user.email
+        expect(data["config"]).not_to be_nil
+
+        config = data["config"]
+        expect(config["day_type"]).to eq @user_config.day_type
+        expect(config["income_cents"]).to eq @user_config.income_cents
+        expect(config["work_in_holidays"]).to eq @user_config.work_in_holidays
+        expect(config["day"]).to eq @user_config.day
+        expect(config["income_option"]).to eq @user_config.income_option
+      end
+
     end
 
     context "should response with error messages" do
@@ -60,6 +85,7 @@ RSpec.describe "Api::AuthenticationController", type: :request do
       expect(response).to have_http_status(:ok)
       data = JSON.parse(response.body)
       expect(data).to include "id", "name", "email", "token"
+      expect(data).not_to include "config"
       expect(data["name"]).to eq @data[:name]
       expect(data["email"]).to eq @data[:email]
     end
@@ -173,6 +199,5 @@ RSpec.describe "Api::AuthenticationController", type: :request do
         expect(enqueued_jobs.size).to eq 0
       end
     end
-
   end
 end

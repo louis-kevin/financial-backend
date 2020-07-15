@@ -35,7 +35,7 @@ module Api
     private
 
     def user_as_json(user, token = true)
-      data = user.as_json(only: [:id, :name, :email])
+      data = user.as_json(only: [:id, :name, :email], include: { config: { except: [:id, :user_id, :created_at, :updated_at] } })
 
       data.merge! token: user.generate_jwt_token if token
 

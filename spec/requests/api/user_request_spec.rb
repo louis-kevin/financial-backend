@@ -6,15 +6,37 @@ RSpec.describe "Api::User", type: :request do
       @user = create(:user)
     end
 
-    it 'should return user data' do
-      get_with_token api_user_me_url
+    context 'should return user data' do
+      it 'with no config' do
+        get_with_token api_user_me_url
 
-      expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:ok)
 
-      data = JSON.parse(response.body)
-      expect(data["id"]).to eq @user.id
-      expect(data["name"]).to eq @user.name
-      expect(data["email"]).to eq @user.email
+        data = JSON.parse(response.body)
+        expect(data["id"]).to eq @user.id
+        expect(data["name"]).to eq @user.name
+        expect(data["email"]).to eq @user.email
+        expect(data["config"]).not_to be_present
+      end
+
+      it 'with config' do
+        @user_config = create(:user_config, user: @user)
+        get_with_token api_user_me_url
+
+        expect(response).to have_http_status(:ok)
+
+        data = JSON.parse(response.body)
+        expect(data["id"]).to eq @user.id
+        expect(data["name"]).to eq @user.name
+        expect(data["email"]).to eq @user.email
+        expect(data["config"]).to be_present
+        config = data["config"]
+        expect(config["day_type"]).to eq @user_config.day_type
+        expect(config["income_cents"]).to eq @user_config.income_cents
+        expect(config["work_in_holidays"]).to eq @user_config.work_in_holidays
+        expect(config["day"]).to eq @user_config.day
+        expect(config["income_option"]).to eq @user_config.income_option
+      end
     end
 
     it 'should response with 401' do

@@ -34,7 +34,7 @@ class Api::UserController < Api::ApplicationController
   private
 
   def user_as_json(user)
-    user.as_json(only: [:id, :name, :email])
+    user.as_json(only: [:id, :name, :email], include: { config: { except: [:id, :user_id, :created_at, :updated_at] } })
   end
 
   def check_password
