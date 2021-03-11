@@ -45,10 +45,10 @@ jobs:
       - name: Checking out Code
         uses: actions/checkout@v2
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
         with:
-          ruby-version: 2.6.3
+          ruby-version: 2.6.x
 
       - uses: actions/cache@v2
         name: Fetching cache for bundle
