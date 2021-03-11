@@ -61,13 +61,16 @@ jobs:
       - name: Bundle Install
         run: |
           bundle config path vendor/bundle
-          bundle install
+          bundle install --jobs 4 --retry 3
 
-      - name: Prepare Code Climate Reporter
-        run: |
-          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-          chmod +x ./cc-test-reporter
-          GIT_BRANCH=$GITHUB_REF GIT_COMMIT_SHA=$GITHUB_SHA ./cc-test-reporter before-build
+#       - name: Prepare Code Climate Reporter
+#         env:
+#           GIT_BRANCH: $GITHUB_REF
+#           GIT_COMMIT_SHA: $GITHUB_SHA
+#         run: |
+#           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+#           chmod +x ./cc-test-reporter
+#           ./cc-test-reporter before-build
 
       - name: Setup Database
         run: bundler exec rake db:create db:test:prepare RAILS_ENV=test
@@ -75,7 +78,7 @@ jobs:
       - name: Run Tests
         run: bundler exec rspec
 
-      - name: Report coverage
-        run: GIT_BRANCH=$GITHUB_REF GIT_COMMIT_SHA=$GITHUB_SHA ./cc-test-reporter after-build -t simplecov --exit-code $?
+#       - name: Report coverage
+#         run: GIT_BRANCH=$GITHUB_REF GIT_COMMIT_SHA=$GITHUB_SHA ./cc-test-reporter after-build -t simplecov --exit-code $?
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
