@@ -89,6 +89,7 @@ GEM
     ffi (1.13.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    graphql (1.11.3)
     i18n (1.8.3)
       concurrent-ruby (~> 1.0)
     json (2.3.1)
@@ -241,6 +242,7 @@ DEPENDENCIES
   factory_bot
   factory_bot_rails
   faker
+  graphql
   jwt
   kaminari
   letter_opener

@@ -1,6 +1,7 @@
 class Bill < ApplicationRecord
   enum repetition_type: { once: 0, daily: 1, monthly: 2 }
   belongs_to :account
+  belongs_to :category
   has_one :user, through: :account
 
   monetize :amount_cents
