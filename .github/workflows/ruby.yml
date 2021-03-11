@@ -48,7 +48,7 @@ jobs:
       - name: Setup Ruby
         uses: actions/setup-ruby@v1
         with:
-          ruby-version: 2.6.x
+          ruby-version: 2.6.3
 
       - uses: actions/cache@v2
         name: Fetching cache for bundle
