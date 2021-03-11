@@ -45,10 +45,10 @@ jobs:
       - name: Checking out Code
         uses: actions/checkout@v2
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
         with:
-          ruby-version: 2.6.3
+          ruby-version: 2.6
 
       - uses: actions/cache@v2
         name: Fetching cache for bundle
@@ -61,13 +61,16 @@ jobs:
       - name: Bundle Install
         run: |
           bundle config path vendor/bundle
-          bundle install
+          bundle install --jobs 4 --retry 3
 
       - name: Prepare Code Climate Reporter
+        env:
+          GIT_BRANCH: $GITHUB_REF
+          GIT_COMMIT_SHA: $GITHUB_SHA
         run: |
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
           chmod +x ./cc-test-reporter
-          GIT_BRANCH=$GITHUB_REF GIT_COMMIT_SHA=$GITHUB_SHA ./cc-test-reporter before-build
+          ./cc-test-reporter before-build
 
       - name: Setup Database
         run: bundler exec rake db:create db:test:prepare RAILS_ENV=test

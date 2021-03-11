@@ -225,7 +225,7 @@ RSpec.describe "Api::User", type: :request do
 
         expect(data["day"]).to eq @data[:day]
         expect(data["day_type"]).to eq @data[:day_type].to_s
-        expect(data["income_cents"]).to eq @data[:income] * 100
+        expect(data["income_cents"]).to eq (@data[:income] * 100).to_i
         expect(data["income_option"]).to eq @data[:income_option].to_s
         expect(data["work_in_holidays"]).to eq @data[:work_in_holidays]
 
