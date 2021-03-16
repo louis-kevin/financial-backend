@@ -49,7 +49,7 @@ RSpec.describe "Api::User", type: :request do
         expect(data["accounts"].count).to eq accounts.count
         account_ids = data["accounts"].map{|account| account["id"]}
         expect(account_ids).to eq accounts.map(&:id)
-        expect(data["total_amount"]).to eq total_amount
+        expect(data["total_amount"]).to eq total_amount.round(2)
         # Checking only if data is same in methods, to check calculations see user_config_spec.rb
         expect(data["days_until_payment"]).to eq user_config.days_until_payment
         expect(data["overhead_per_day"]).to eq user_config.overhead_per_day
@@ -80,7 +80,7 @@ RSpec.describe "Api::User", type: :request do
         expect(data["accounts"].count).to eq accounts.count
         account_ids = data["accounts"].map{|account| account["id"]}
         expect(account_ids).to eq accounts.map(&:id)
-        expect(data["total_amount"]).to eq total_amount
+        expect(data["total_amount"]).to eq total_amount.round(2)
         # Checking only if data is same in methods, to check calculations see user_config_spec.rb
         expect(data["days_until_payment"]).to eq user_config.days_until_payment
         expect(data["overhead_per_day"]).to eq user_config.overhead_per_day

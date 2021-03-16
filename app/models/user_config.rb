@@ -9,7 +9,7 @@ class UserConfig < ApplicationRecord
   validates :day, presence: true, numericality: {
     only_integer: true,
     greater_than_or_equal_to: 1,
-    less_than_or_equal_to: ->(config) { config.day_type == :all_days.to_s ? 31 : 20 }
+    less_than_or_equal_to: ->(config) { config.day_type == :all_days.to_s ? 31 : 20 } # TODO Check if is necessary (28 days max)
   }
   validates :day_type, presence: true, inclusion: { in: day_types.keys }
   validates :income, numericality: true
@@ -31,7 +31,7 @@ class UserConfig < ApplicationRecord
   def last_payment
     return @last_payment if @last_payment
 
-    date = DateTime.now.to_date
+    date = Date.today.to_date
 
     last_payment = date.change(day: day)
 
@@ -51,7 +51,7 @@ class UserConfig < ApplicationRecord
   def next_payment
     return @next_payment if @next_payment
 
-    date = DateTime.now.to_date
+    date = Date.today.to_date
 
     next_payment = date.change(day: day)
 
@@ -78,13 +78,13 @@ class UserConfig < ApplicationRecord
 
   def percentage_until_income
     last_payment = self.last_payment
-    a = (Date.today.next_week - last_payment).to_d(2)
+    a = (Date.today - last_payment).to_d(2)
     b = (next_payment - last_payment).to_d(2)
     ((a/b)*100).to_i
   end
 
   def weekdays_until_payment
-    calendar.business_days_between Date.today, next_payment.next_day
+    calendar.business_days_between Date.today, next_payment
   end
 
   def weekend_until_payment
