@@ -91,6 +91,8 @@ class UserConfig < ApplicationRecord
     days_until_payment - weekdays_until_payment
   end
 
+  private
+
   def calendar
     Business::Calendar.new # handle the multiple holidays with https://github.com/gocardless/business
   end

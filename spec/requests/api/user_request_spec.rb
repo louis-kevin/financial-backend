@@ -1,6 +1,97 @@
 require 'rails_helper'
 
 RSpec.describe "Api::User", type: :request do
+  describe 'GET #dashboard' do
+    before(:each) do
+      @user = create(:user)
+    end
+
+    context 'should return dashboard data' do
+      it 'when user dosen\'t have configuration' do
+        get_with_token api_user_dashboard_url
+
+        expect(response).to have_http_status(:ok)
+
+        data = JSON.parse(response.body)
+        expect(data).to be_empty
+      end
+
+      it 'when user dosen\'t have any account' do
+        user_config = create(:user_config, user: @user)
+
+        get_with_token api_user_dashboard_url
+
+        expect(response).to have_http_status(:ok)
+
+        data = JSON.parse(response.body)
+        expect(data["accounts"]).to be_empty
+        expect(data["total_amount"]).to eq 0
+        # Checking only if data is same in methods, to check calculations see user_config_spec.rb
+        expect(data["days_until_payment"]).to eq user_config.days_until_payment
+        expect(data["overhead_per_day"]).to eq user_config.overhead_per_day
+        expect(data["percentage_until_income"]).to eq user_config.percentage_until_income
+        expect(data["last_payment"]).to eq user_config.last_payment.to_s
+        expect(data["next_payment"]).to eq user_config.next_payment.to_s
+        expect(data["weekdays_until_payment"]).to eq user_config.weekdays_until_payment
+        expect(data["weekend_until_payment"]).to eq user_config.weekend_until_payment
+      end
+
+      it 'when user have accounts without bills' do
+        user_config = create(:user_config, user: @user)
+        accounts = create_list(:account, 5, user: @user)
+        total_amount = accounts.sum(&:amount).to_f
+
+        get_with_token api_user_dashboard_url
+
+        expect(response).to have_http_status(:ok)
+
+        data = JSON.parse(response.body)
+        expect(data["accounts"].count).to eq accounts.count
+        account_ids = data["accounts"].map{|account| account["id"]}
+        expect(account_ids).to eq accounts.map(&:id)
+        expect(data["total_amount"]).to eq total_amount
+        # Checking only if data is same in methods, to check calculations see user_config_spec.rb
+        expect(data["days_until_payment"]).to eq user_config.days_until_payment
+        expect(data["overhead_per_day"]).to eq user_config.overhead_per_day
+        expect(data["percentage_until_income"]).to eq user_config.percentage_until_income
+        expect(data["last_payment"]).to eq user_config.last_payment.to_s
+        expect(data["next_payment"]).to eq user_config.next_payment.to_s
+        expect(data["weekdays_until_payment"]).to eq user_config.weekdays_until_payment
+        expect(data["weekend_until_payment"]).to eq user_config.weekend_until_payment
+      end
+
+      it 'when user have accounts with bills' do
+        user_config = create(:user_config, user: @user)
+        accounts = create_list(:account, (1..5).to_a.sample, user: @user)
+        accounts.each do |account|
+          create_list(:bill, (1..5).to_a.sample, account: account)
+        end
+
+        total_accounts_amount = accounts.sum(&:amount).to_f
+        total_bills_price = @user.reload.bills.where(payed: false).to_a.sum(&:amount).to_f
+
+        total_amount = total_accounts_amount - total_bills_price
+
+        get_with_token api_user_dashboard_url
+
+        expect(response).to have_http_status(:ok)
+
+        data = JSON.parse(response.body)
+        expect(data["accounts"].count).to eq accounts.count
+        account_ids = data["accounts"].map{|account| account["id"]}
+        expect(account_ids).to eq accounts.map(&:id)
+        expect(data["total_amount"]).to eq total_amount
+        # Checking only if data is same in methods, to check calculations see user_config_spec.rb
+        expect(data["days_until_payment"]).to eq user_config.days_until_payment
+        expect(data["overhead_per_day"]).to eq user_config.overhead_per_day
+        expect(data["percentage_until_income"]).to eq user_config.percentage_until_income
+        expect(data["last_payment"]).to eq user_config.last_payment.to_s
+        expect(data["next_payment"]).to eq user_config.next_payment.to_s
+        expect(data["weekdays_until_payment"]).to eq user_config.weekdays_until_payment
+        expect(data["weekend_until_payment"]).to eq user_config.weekend_until_payment
+      end
+    end
+  end
   describe 'GET #me' do
     before(:each) do
       @user = create(:user)
