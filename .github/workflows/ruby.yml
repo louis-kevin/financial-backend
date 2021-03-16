@@ -78,6 +78,12 @@ jobs:
       - name: Run Tests
         run: bundler exec rspec
 
+      - name: Set ENV for codeclimate (push)
+        run: |
+          echo "::set-env name=GIT_BRANCH::$GITHUB_REF"
+          echo "::set-env name=GIT_COMMIT_SHA::$GITHUB_SHA"
+        if: github.event_name == 'push'
+
       - name: Report coverage
         run: GIT_BRANCH=$GITHUB_HEAD_REF GIT_COMMIT_SHA=$(git rev-parse origin/$GITHUB_HEAD_REF) ./cc-test-reporter after-build -t simplecov --exit-code $?
         env:
