@@ -4,7 +4,7 @@ class Api::UserController < Api::ApplicationController
 
   def dashboard
     accounts = current_user.accounts.map do |account|
-      { id: account.id, name: account.name, color: account.color, amount: account.total_amount_cents }
+      { id: account.id, name: account.name, color: account.color, amount_cents: account.total_amount_cents }
     end
 
     user_config = current_user.user_config
