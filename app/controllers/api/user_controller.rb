@@ -1,5 +1,6 @@
 class Api::UserController < Api::ApplicationController
   before_action :check_password, only: :update
+  before_action :check_user_config, only: [:dashboard]
 
   def dashboard
     accounts = current_user.accounts.map do |account|
@@ -58,6 +59,10 @@ class Api::UserController < Api::ApplicationController
     end
 
     @password = params[:new_password]
+  end
+
+  def check_user_config
+    render_json unless current_user.user_config
   end
 
   def update_params

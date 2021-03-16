@@ -9,6 +9,6 @@ class Account < ApplicationRecord
   has_many :bills
 
   def total_amount
-    amount.to_f - bills.where(payed: false).sum(:amount_cents)/100
+    (amount_cents - bills.where(payed: false).sum(:amount_cents)).to_f/100
   end
 end
