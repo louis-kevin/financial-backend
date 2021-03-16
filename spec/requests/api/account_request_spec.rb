@@ -129,6 +129,15 @@ RSpec.describe "Api::AccountController", type: :request do
       compare_data_and_model data, @account
     end
 
+    it 'should create and return the account data when color is 8 chars' do
+      @data[:color] = '0xfff44336'
+      @account.color = '0xfff44336'
+      data = create_request @data
+      expect(Account.count).to eq 1
+      validate_account_format(data)
+      compare_data_and_model data, @account
+    end
+
     it 'should create and return the account data even without amount' do
       @data.extract! :amount
       @account.amount = nil
