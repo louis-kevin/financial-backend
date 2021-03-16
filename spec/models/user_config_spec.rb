@@ -102,14 +102,14 @@ RSpec.describe UserConfig, type: :model do
       user_config = create(:user_config)
       allow(user_config).to receive(:days_until_payment) { 30 }
       allow(user_config.user).to receive(:total_amount_cents) { 30 }
-      expect(user_config.overhead_per_day).to eq 1
+      expect(user_config.overhead_per_day_cents).to eq 1
     end
 
     it 'should return 0 amount per day when user amount is 0' do
       user_config = create(:user_config)
       allow(user_config).to receive(:days_until_payment) { 30 }
       allow(user_config.user).to receive(:total_amount_cents) { 0 }
-      expect(user_config.overhead_per_day).to eq 0
+      expect(user_config.overhead_per_day_cents).to eq 0
     end
   end
   describe '#percentage_until_income' do

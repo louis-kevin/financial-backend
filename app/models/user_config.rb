@@ -19,7 +19,7 @@ class UserConfig < ApplicationRecord
   def to_data
     {
       days_until_payment: days_until_payment,
-      overhead_per_day: overhead_per_day,
+      overhead_per_day_cents: overhead_per_day_cents,
       percentage_until_income: percentage_until_income,
       last_payment: last_payment,
       next_payment: next_payment,
@@ -72,7 +72,7 @@ class UserConfig < ApplicationRecord
     (next_payment - last_payment).to_i
   end
 
-  def overhead_per_day
+  def overhead_per_day_cents
     (user.total_amount_cents / days_until_payment)
   end
 

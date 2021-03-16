@@ -28,7 +28,7 @@ RSpec.describe "Api::User", type: :request do
         expect(data["total_amount_cents"]).to eq 0
         # Checking only if data is same in methods, to check calculations see user_config_spec.rb
         expect(data["days_until_payment"]).to eq user_config.days_until_payment
-        expect(data["overhead_per_day"]).to eq user_config.overhead_per_day
+        expect(data["overhead_per_day_cents"]).to eq user_config.overhead_per_day_cents
         expect(data["percentage_until_income"]).to eq user_config.percentage_until_income
         expect(data["last_payment"]).to eq user_config.last_payment.to_s
         expect(data["next_payment"]).to eq user_config.next_payment.to_s
@@ -52,7 +52,7 @@ RSpec.describe "Api::User", type: :request do
         expect(data["total_amount_cents"]).to eq total_amount
         # Checking only if data is same in methods, to check calculations see user_config_spec.rb
         expect(data["days_until_payment"]).to eq user_config.days_until_payment
-        expect(data["overhead_per_day"]).to eq user_config.overhead_per_day
+        expect(data["overhead_per_day_cents"]).to eq user_config.overhead_per_day_cents
         expect(data["percentage_until_income"]).to eq user_config.percentage_until_income
         expect(data["last_payment"]).to eq user_config.last_payment.to_s
         expect(data["next_payment"]).to eq user_config.next_payment.to_s
@@ -83,7 +83,7 @@ RSpec.describe "Api::User", type: :request do
         expect(data["total_amount_cents"]).to eq total_amount_cents
         # Checking only if data is same in methods, to check calculations see user_config_spec.rb
         expect(data["days_until_payment"]).to eq user_config.days_until_payment
-        expect(data["overhead_per_day"]).to eq user_config.overhead_per_day
+        expect(data["overhead_per_day_cents"]).to eq user_config.overhead_per_day_cents
         expect(data["percentage_until_income"]).to eq user_config.percentage_until_income
         expect(data["last_payment"]).to eq user_config.last_payment.to_s
         expect(data["next_payment"]).to eq user_config.next_payment.to_s
