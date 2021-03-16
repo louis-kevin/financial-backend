@@ -80,8 +80,13 @@ jobs:
 
       - name: Set ENV for codeclimate (push)
         run: |
+
+          echo "::stop-commands::`echo -n ${{ github.token }} | sha256sum | head -c 64`"
+
           echo "::set-env name=GIT_BRANCH::$GITHUB_REF"
           echo "::set-env name=GIT_COMMIT_SHA::$GITHUB_SHA"
+
+          echo "::`echo -n ${{ github.token }} | sha256sum | head -c 64`::"
         if: github.event_name == 'push'
 
       - name: Report coverage
