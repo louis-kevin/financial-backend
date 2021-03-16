@@ -60,6 +60,6 @@ class Api::BillController < Api::ApplicationController
   end
 
   def bill_params
-    params.permit :name, :payed, :amount, :payment_day, :repetition_type, :account_id
+    params.permit :name, :payed, :amount_cents, :payment_day, :repetition_type, :account_id
   end
 end

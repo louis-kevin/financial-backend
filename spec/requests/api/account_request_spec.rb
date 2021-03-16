@@ -118,7 +118,7 @@ RSpec.describe "Api::AccountController", type: :request do
       @data = {
         name: @account.name,
         color: @account.color,
-        amount: @account.amount.to_f
+        amount_cents: @account.amount_cents
       }
     end
 
@@ -138,13 +138,21 @@ RSpec.describe "Api::AccountController", type: :request do
       compare_data_and_model data, @account
     end
 
-    it 'should create and return the account data even without amount' do
-      @data.extract! :amount
-      @account.amount = nil
+    it 'should create and return the account data even without amount_cents' do
+      @data.extract! :amount_cents
+      @account.amount_cents = nil
       data = create_request @data
       expect(Account.count).to eq 1
       validate_account_format(data)
       compare_data_and_model data, @account
+    end
+
+    it 'should create and return the account data with amount_cents as zero even passing amount' do
+      @data[:amount] = 10
+      @data.delete :amount_cents
+      data = create_request @data, :created
+      validate_account_format(data)
+      expect(Account.first.amount_cents).to eq 0
     end
 
     context 'should return error' do
@@ -188,12 +196,12 @@ RSpec.describe "Api::AccountController", type: :request do
         end
       end
 
-      context 'when amount field is wrong' do
+      context 'when amount_cents field is wrong' do
         it 'because is not a number' do
-          @data[:amount] = ''
+          @data[:amount_cents] = ''
           data = create_request @data, :unprocessable_entity
           expect(Account.count).to eq 0
-          expect(data).to include "amount"
+          expect(data).to include "amount_cents"
         end
       end
     end
@@ -209,7 +217,7 @@ RSpec.describe "Api::AccountController", type: :request do
         id: @account.id,
         name: @new_data.name,
         color: @new_data.color,
-        amount: @new_data.amount.to_f
+        amount_cents: @new_data.amount_cents
       }
     end
 
@@ -227,6 +235,14 @@ RSpec.describe "Api::AccountController", type: :request do
       data = update_request @data
       validate_account_format(data)
       compare_data_and_model data, @new_data, true
+    end
+
+    it 'should not update when passing amount' do
+      expect(Account.count).to eq 1
+      @data[:amount] = @account.amount.to_f + 1
+      data = update_request @data
+      validate_account_format(data)
+      expect(Account.first.amount.to_f).to_not eq @data[:amount]
     end
 
     context 'should return error' do
@@ -261,7 +277,7 @@ RSpec.describe "Api::AccountController", type: :request do
 
       context 'when amount field is wrong' do
         it 'because is not a number' do
-          @data[:amount] = ''
+          @data[:amount_cents] = ''
           data = update_request @data, :unprocessable_entity
           expect(data).to include "amount"
         end

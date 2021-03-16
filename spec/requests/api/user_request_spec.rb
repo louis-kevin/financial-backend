@@ -25,7 +25,7 @@ RSpec.describe "Api::User", type: :request do
 
         data = JSON.parse(response.body)
         expect(data["accounts"]).to be_empty
-        expect(data["total_amount"]).to eq 0
+        expect(data["total_amount_cents"]).to eq 0
         # Checking only if data is same in methods, to check calculations see user_config_spec.rb
         expect(data["days_until_payment"]).to eq user_config.days_until_payment
         expect(data["overhead_per_day"]).to eq user_config.overhead_per_day
@@ -39,7 +39,7 @@ RSpec.describe "Api::User", type: :request do
       it 'when user have accounts without bills' do
         user_config = create(:user_config, user: @user)
         accounts = create_list(:account, 5, user: @user)
-        total_amount = accounts.sum(&:amount).to_f
+        total_amount = accounts.sum(&:amount_cents)
 
         get_with_token api_user_dashboard_url
 
@@ -49,7 +49,7 @@ RSpec.describe "Api::User", type: :request do
         expect(data["accounts"].count).to eq accounts.count
         account_ids = data["accounts"].map{|account| account["id"]}
         expect(account_ids).to eq accounts.map(&:id)
-        expect(data["total_amount"]).to eq total_amount.round(2)
+        expect(data["total_amount_cents"]).to eq total_amount
         # Checking only if data is same in methods, to check calculations see user_config_spec.rb
         expect(data["days_until_payment"]).to eq user_config.days_until_payment
         expect(data["overhead_per_day"]).to eq user_config.overhead_per_day
@@ -67,10 +67,10 @@ RSpec.describe "Api::User", type: :request do
           create_list(:bill, (1..5).to_a.sample, account: account)
         end
 
-        total_accounts_amount = accounts.sum(&:amount).to_f
-        total_bills_price = @user.reload.bills.where(payed: false).to_a.sum(&:amount).to_f
+        total_accounts_amount = accounts.sum(&:amount_cents)
+        total_bills_price = @user.reload.bills.where(payed: false).to_a.sum(&:amount_cents)
 
-        total_amount = total_accounts_amount - total_bills_price
+        total_amount_cents = total_accounts_amount - total_bills_price
 
         get_with_token api_user_dashboard_url
 
@@ -78,9 +78,9 @@ RSpec.describe "Api::User", type: :request do
 
         data = JSON.parse(response.body)
         expect(data["accounts"].count).to eq accounts.count
-        account_ids = data["accounts"].map{|account| account["id"]}
+        account_ids = data["accounts"].map { |account| account["id"] }
         expect(account_ids).to eq accounts.map(&:id)
-        expect(data["total_amount"]).to eq total_amount.round(2)
+        expect(data["total_amount_cents"]).to eq total_amount_cents
         # Checking only if data is same in methods, to check calculations see user_config_spec.rb
         expect(data["days_until_payment"]).to eq user_config.days_until_payment
         expect(data["overhead_per_day"]).to eq user_config.overhead_per_day
@@ -273,7 +273,7 @@ RSpec.describe "Api::User", type: :request do
         @data = {
           day: @user_config.day,
           day_type: @user_config.day_type,
-          income: @user_config.income,
+          income_cents: @user_config.income_cents,
           income_option: @user_config.income_option,
           work_in_holidays: @user_config.work_in_holidays
         }
@@ -290,7 +290,7 @@ RSpec.describe "Api::User", type: :request do
         expect(data).to include "day", "day_type", "income_cents", "income_option", "work_in_holidays"
         expect(data["day"]).to eq @data[:day]
         expect(data["day_type"]).to eq @data[:day_type].to_s
-        expect(data["income_cents"]).to eq @data[:income].cents
+        expect(data["income_cents"]).to eq @data[:income_cents]
         expect(data["income_option"]).to eq @data[:income_option].to_s
         expect(data["work_in_holidays"]).to eq @data[:work_in_holidays]
       end
@@ -303,13 +303,12 @@ RSpec.describe "Api::User", type: :request do
         @data = {
           day: @day_list.reject { |i| i == @user_config.day }.sample,
           day_type: @user_config.all_days? ? :work_day : :all_days,
-          income: @user_config.income.to_f + 1,
+          income_cents: @user_config.income_cents + 1,
           income_option: @user_config.next_work_day? ? :previous_day : :next_work_day,
           work_in_holidays: !@user_config.work_in_holidays
         }
 
         put_with_token api_user_settings_url, @data
-
 
         expect(response).to have_http_status(:ok)
 
@@ -318,13 +317,13 @@ RSpec.describe "Api::User", type: :request do
 
         expect(data["day"]).not_to eq @user_config.day
         expect(data["day_type"]).not_to eq @user_config.day_type
-        expect(data["income_cents"].to_f).not_to eq @user_config.income.cents
+        expect(data["income_cents"].to_f).not_to eq @user_config.income_cents
         expect(data["income_option"]).not_to eq @user_config.income_option.to_s
         expect(data["work_in_holidays"]).not_to eq @user_config.work_in_holidays
 
         expect(data["day"]).to eq @data[:day]
         expect(data["day_type"]).to eq @data[:day_type].to_s
-        expect(data["income_cents"]).to eq (@data[:income] * 100).to_i
+        expect(data["income_cents"]).to eq @data[:income_cents]
         expect(data["income_option"]).to eq @data[:income_option].to_s
         expect(data["work_in_holidays"]).to eq @data[:work_in_holidays]
 
@@ -332,7 +331,7 @@ RSpec.describe "Api::User", type: :request do
 
         expect(data["day"]).to eq @user_config.day
         expect(data["day_type"]).to eq @user_config.day_type
-        expect(data["income_cents"]).to eq @user_config.income.cents
+        expect(data["income_cents"]).to eq @user_config.income_cents
         expect(data["income_option"]).to eq @user_config.income_option.to_s
         expect(data["work_in_holidays"]).to eq @user_config.work_in_holidays
 
@@ -362,7 +361,7 @@ RSpec.describe "Api::User", type: :request do
         @data = {
           day: @day_list.reject { |i| i == @user_config.day }.sample,
           day_type: @user_config.all_days? ? :work_day : :all_days,
-          income: @user_config.income.to_f + 1,
+          income_cents: @user_config.income_cents,
           income_option: @user_config.next_work_day? ? :previous_day : :next_work_day,
           work_in_holidays: !@user_config.work_in_holidays
         }
@@ -426,14 +425,23 @@ RSpec.describe "Api::User", type: :request do
         end
       end
 
-      context 'when has invalid income' do
-        it 'with invalid income' do
-          put_with_token api_user_settings_url, { income: :wrong.to_s }
+      context 'when has invalid income_cents' do
+        it 'with income_cents as string ' do
+          put_with_token api_user_settings_url, { income_cents: :wrong.to_s }
 
           expect(response).to have_http_status(:unprocessable_entity)
 
           data = JSON.parse(response.body)
-          expect(data).to include "income"
+          expect(data).to include "income_cents"
+        end
+
+        it 'with income_cents as double' do
+          put_with_token api_user_settings_url, { income_cents: 13.5 }
+
+          expect(response).to have_http_status(:unprocessable_entity)
+
+          data = JSON.parse(response.body)
+          expect(data).to include "income_cents"
         end
       end
 

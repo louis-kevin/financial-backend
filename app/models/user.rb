@@ -21,7 +21,7 @@ class User < ApplicationRecord
     config.present? && config.id?
   end
 
-  def total_amount
-    accounts.sum(&:total_amount)
+  def total_amount_cents
+    accounts.sum(&:total_amount_cents)
   end
 end

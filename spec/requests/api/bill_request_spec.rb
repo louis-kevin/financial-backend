@@ -171,7 +171,7 @@ RSpec.describe "Api::Bills", type: :request do
       @data = {
         name: @bill.name,
         payed: @bill.payed,
-        amount: @bill.amount.to_f,
+        amount_cents: @bill.amount_cents,
         payment_day: @bill.payment_day,
         repetition_type: @bill.repetition_type,
         account_id: @account.id
@@ -229,23 +229,30 @@ RSpec.describe "Api::Bills", type: :request do
         end
       end
 
-      context 'when amount field is wrong' do
+      context 'when amount_cents field is wrong' do
         it 'because is missing' do
-          data = create_request @data.except(:amount), :unprocessable_entity
+          data = create_request @data.except(:amount_cents), :unprocessable_entity
           expect(Bill.count).to eq 0
-          expect(data).to include "amount"
+          expect(data).to include "amount_cents"
         end
         it 'because is not a number' do
-          @data[:amount] = ''
+          @data[:amount_cents] = ''
           data = create_request @data, :unprocessable_entity
           expect(Bill.count).to eq 0
-          expect(data).to include "amount"
+          expect(data).to include "amount_cents"
         end
         it 'because is equal to 0' do
-          @data[:amount] = 0
+          @data[:amount_cents] = 0
           data = create_request @data, :unprocessable_entity
           expect(Bill.count).to eq 0
-          expect(data).to include "amount"
+          expect(data).to include "amount_cents"
+        end
+
+        it 'because is a double' do
+          @data[:amount_cents] = 12.3
+          data = create_request @data, :unprocessable_entity
+          expect(Bill.count).to eq 0
+          expect(data).to include "amount_cents"
         end
       end
 
@@ -284,7 +291,7 @@ RSpec.describe "Api::Bills", type: :request do
         id: @bill.id,
         name: @new_data.name,
         payed: @new_data.payed,
-        amount: @new_data.amount.to_f,
+        amount_cents: @new_data.amount_cents,
         payment_day: @new_data.payment_day,
         repetition_type: @new_data.repetition_type
       }
@@ -314,7 +321,7 @@ RSpec.describe "Api::Bills", type: :request do
         @old_data = {
           name: @bill.name,
           payed: @bill.payed,
-          amount: @bill.amount.to_f,
+          amount_cents: @bill.amount_cents,
           payment_day: @bill.payment_day,
           repetition_type: @bill.repetition_type
         }
@@ -324,7 +331,7 @@ RSpec.describe "Api::Bills", type: :request do
         @bill.reload
         expect(@old_data[:name]).to eq @bill.name
         expect(@old_data[:payed]).to eq @bill.payed
-        expect(@old_data[:amount]).to eq @bill.amount.to_f
+        expect(@old_data[:amount_cents]).to eq @bill.amount_cents
         expect(@old_data[:payment_day]).to eq @bill.payment_day
         expect(@old_data[:repetition_type]).to eq @bill.repetition_type
       end
@@ -367,16 +374,21 @@ RSpec.describe "Api::Bills", type: :request do
         end
       end
 
-      context 'when amount field is wrong' do
+      context 'when amount_cents field is wrong' do
         it 'because is not a number' do
-          @data[:amount] = ''
+          @data[:amount_cents] = ''
           data = update_request @data, :unprocessable_entity
-          expect(data).to include "amount"
+          expect(data).to include "amount_cents"
         end
         it 'because is equal to 0' do
-          @data[:amount] = 0
+          @data[:amount_cents] = 0
           data = update_request @data, :unprocessable_entity
-          expect(data).to include "amount"
+          expect(data).to include "amount_cents"
+        end
+        it 'because is a double' do
+          @data[:amount_cents] = 12.3
+          data = update_request @data, :unprocessable_entity
+          expect(data).to include "amount_cents"
         end
       end
 
@@ -494,7 +506,7 @@ RSpec.describe "Api::Bills", type: :request do
   def compare_data_and_model(data, bill, updated = false)
     expect(data["name"]).to eq bill.name
     expect(data["repetition_type"]).to eq bill.repetition_type
-    expect(data["amount_cents"]).to eq bill.amount_cents.to_f
+    expect(data["amount_cents"]).to eq bill.amount_cents
     expect(data["payed"]).to eq bill.payed
     expect(data["payment_day"]).to eq bill.payment_day
 

@@ -5,7 +5,7 @@ class Bill < ApplicationRecord
 
   monetize :amount_cents
 
-  validates :amount, presence: true, numericality: { greater_than: 0 }
+  validates :amount_cents, presence: true, numericality: { greater_than: 0, only_integer: true }
   validates :repetition_type, presence: true, inclusion: { in: repetition_types.keys }
   validates :name, presence: true
   validates :payed, inclusion: { in: [true, false] }

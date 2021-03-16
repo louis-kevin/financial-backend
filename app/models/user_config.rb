@@ -12,7 +12,7 @@ class UserConfig < ApplicationRecord
     less_than_or_equal_to: ->(config) { config.day_type == :all_days.to_s ? 31 : 20 } # TODO Check if is necessary (28 days max)
   }
   validates :day_type, presence: true, inclusion: { in: day_types.keys }
-  validates :income, numericality: true
+  validates :income_cents, numericality: { only_integer: true }
   validates :income_option, presence: true, inclusion: { in: income_options.keys }
   validates :work_in_holidays, inclusion: { in: [true, false] }
 
@@ -73,7 +73,7 @@ class UserConfig < ApplicationRecord
   end
 
   def overhead_per_day
-    Money.new((user.total_amount/days_until_payment)*100).to_f
+    (user.total_amount_cents / days_until_payment)
   end
 
   def percentage_until_income

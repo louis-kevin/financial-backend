@@ -50,7 +50,7 @@ class Api::AccountController < Api::ApplicationController
   end
 
   def account_params
-    data = params.permit :name, :color, :amount
+    data = params.permit :name, :color, :amount_cents
     data.merge! user: current_user
   end
 end
