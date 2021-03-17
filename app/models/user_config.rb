@@ -80,7 +80,7 @@ class UserConfig < ApplicationRecord
     last_payment = self.last_payment
     a = (Date.today - last_payment).to_d(2)
     b = (next_payment - last_payment).to_d(2)
-    ((a/b)*100).to_i
+    (a / b)
   end
 
   def weekdays_until_payment

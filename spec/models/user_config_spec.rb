@@ -134,7 +134,7 @@ RSpec.describe UserConfig, type: :model do
         Date.today + 1.day
       }
 
-      expect(user_config.percentage_until_income).to eq 90
+      expect(user_config.percentage_until_income).to eq 0.9
     end
   end
   describe '#weekdays_until_payment' do
