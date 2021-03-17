@@ -166,7 +166,7 @@ RSpec.describe "Api::Bills", type: :request do
     before(:each) do
       @user = create(:user)
       @account = create(:account, user: @user)
-      @bill = build(:bill, account: @account, payed: false)
+      @bill = build(:bill, account: @account, payed: false, repetition_type: :monthly)
 
       @data = {
         name: @bill.name,
@@ -182,6 +182,47 @@ RSpec.describe "Api::Bills", type: :request do
       data = create_request @data
       expect(Bill.count).to eq 1
       validate_bill_format(data)
+      compare_data_and_model data, @bill
+    end
+
+    context 'should create and return the bill data without payment day' do
+      it 'when is daily' do
+        @data.extract! :payment_day
+        @data[:repetition_type] = :daily
+        data = create_request @data
+        expect(Bill.count).to eq 1
+        @bill = Bill.first
+        validate_bill_format(data)
+        compare_data_and_model data, @bill
+      end
+      it 'when is once' do
+        @data.extract! :payment_day
+        @data[:repetition_type] = :once
+        data = create_request @data
+        expect(Bill.count).to eq 1
+        @bill = Bill.first
+        validate_bill_format(data)
+        compare_data_and_model data, @bill
+      end
+    end
+
+    it 'should create without payment day when daily even if payment day is in data' do
+      @data[:repetition_type] = :daily
+      data = create_request @data
+      expect(Bill.count).to eq 1
+      @bill = Bill.first
+      validate_bill_format(data)
+      expect(data["payment_day"]).to be_nil
+      compare_data_and_model data, @bill
+    end
+
+    it 'should create with payment day when once' do
+      @data[:repetition_type] = :once
+      data = create_request @data
+      expect(Bill.count).to eq 1
+      @bill = Bill.first
+      validate_bill_format(data)
+      expect(data["payment_day"]).to be_present
       compare_data_and_model data, @bill
     end
 
@@ -203,8 +244,9 @@ RSpec.describe "Api::Bills", type: :request do
       end
 
       context 'when payment_day field is wrong' do
-        it 'because is missing' do
+        it 'because is missing and repetition type is monthly' do
           @data.extract! :payment_day
+          @data[:repetition_type] = :monthly
           data = create_request @data, :unprocessable_entity
           expect(Bill.count).to eq 0
           expect(data).to include "payment_day"
@@ -276,13 +318,14 @@ RSpec.describe "Api::Bills", type: :request do
     before(:each) do
       @user = create(:user)
       @account = create(:account, user: @user)
-      @bill = create(:bill, account: @account, payed: false)
+      @bill = create(:bill, account: @account, payed: false, repetition_type: :monthly)
 
       same_data = {
         account: @account,
         created_at: @bill.created_at,
         id: @bill.id,
-        updated_at: @bill.updated_at - 1.second
+        updated_at: @bill.updated_at - 1.second,
+        repetition_type: :monthly
       }
 
       @new_data = build(:bill, same_data)
@@ -302,6 +345,46 @@ RSpec.describe "Api::Bills", type: :request do
       data = update_request @data
       validate_bill_format(data)
       compare_data_and_model data, @new_data, true
+    end
+
+    it 'should empty the payment day when updating to daily' do
+      @new_data.payment_day = nil
+      @new_data.repetition_type = :daily
+      @data.extract! :payment_day
+      @data[:repetition_type] = :daily
+      expect(@bill.payment_day).to be_present
+      expect(Bill.count).to eq 1
+      data = update_request @data
+      validate_bill_format(data)
+      compare_data_and_model data, @new_data, true
+      expect(@bill.reload.payment_day).to be_nil
+    end
+
+    it 'should not empty the payment day when updating to once' do
+      @new_data.payment_day = @bill.payment_day
+      @new_data.repetition_type = :once
+      @data.extract! :payment_day
+      @data[:repetition_type] = :once
+      expect(@bill.payment_day).to be_present
+      expect(Bill.count).to eq 1
+      data = update_request @data
+      validate_bill_format(data)
+      compare_data_and_model data, @new_data, true
+      expect(@bill.reload.payment_day).to be_present
+    end
+
+    it 'should allow empty the payment day when updating to once' do
+      @bill.update repetition_type: :daily
+      @new_data.payment_day = @bill.payment_day
+      @new_data.repetition_type = :once
+      @data.extract! :payment_day
+      @data[:repetition_type] = :once
+      expect(@bill.payment_day).to be_nil
+      expect(Bill.count).to eq 1
+      data = update_request @data
+      validate_bill_format(data)
+      compare_data_and_model data, @new_data, true
+      expect(@bill.reload.payment_day).to be_nil
     end
 
     it 'should not update the user_id' do
@@ -357,8 +440,13 @@ RSpec.describe "Api::Bills", type: :request do
       end
 
       context 'when payment_day field is wrong' do
-        it 'because is empty' do
-          @data[:payment_day] = ''
+        it 'because is missing and repetition type is monthly' do
+          @bill.update repetition_type: :daily
+          @old_data[:payment_day] = nil
+          @old_data[:repetition_type] = :daily.to_s
+          expect(@bill.payment_day).to be_nil
+          @data[:repetition_type] = :monthly
+          @data.extract! :payment_day
           data = update_request @data, :unprocessable_entity
           expect(data).to include "payment_day"
         end

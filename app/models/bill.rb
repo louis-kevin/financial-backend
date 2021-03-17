@@ -9,11 +9,13 @@ class Bill < ApplicationRecord
   validates :repetition_type, presence: true, inclusion: { in: repetition_types.keys }
   validates :name, presence: true
   validates :payed, inclusion: { in: [true, false] }
-  validates :payment_day, presence: true, numericality: {
+  validates :payment_day, :allow_nil => true, numericality: {
     only_integer: true,
     greater_than_or_equal_to: 1,
     less_than_or_equal_to: 31
   }
 
+  validates_presence_of :payment_day, :if => :monthly?
 
+  before_validation { self.payment_day = nil if daily? }
 end
