@@ -6,7 +6,7 @@ class Account < ApplicationRecord
   monetize :amount_cents, allow_nil: false
 
   belongs_to :user
-  has_many :bills
+  has_many :bills, dependent: :destroy
 
   def total_amount_cents
     (amount_cents - bills.where(payed: false).sum(:amount_cents))

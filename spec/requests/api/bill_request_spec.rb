@@ -444,7 +444,7 @@ RSpec.describe "Api::Bills", type: :request do
   end
 
   def show_request(id, status = :ok)
-    get_with_token api_bill_url, { id: id }
+    get_with_token api_bill_url(id)
 
     expect(response).to have_http_status(status)
     JSON.parse(response.body)
@@ -452,21 +452,21 @@ RSpec.describe "Api::Bills", type: :request do
 
   def create_request(params, status = :created)
     expect(Bill.count).to eq 0
-    post_with_token api_bill_url, params
+    post_with_token api_bill_index_url, params
 
     expect(response).to have_http_status(status)
     JSON.parse(response.body)
   end
 
   def update_request(params, status = :ok)
-    put_with_token api_bill_url, params
+    put_with_token api_bill_url(params[:id]), params
 
     expect(response).to have_http_status(status)
     JSON.parse(response.body)
   end
 
   def destroy_request(id, status = :ok)
-    delete_with_token api_bill_url, { id: id }
+    delete_with_token api_bill_url(id)
 
     expect(response).to have_http_status(status)
   end

@@ -7,17 +7,17 @@
                              api_user PUT    /api/user(.:format)                                                                      api/user#update
                     api_user_settings PUT    /api/user/settings(.:format)                                                             api/user#settings
                          api_accounts GET    /api/accounts(.:format)                                                                  api/account#index
-                          api_account GET    /api/account(.:format)                                                                   api/account#show
-                                      PATCH  /api/account(.:format)                                                                   api/account#update
-                                      PUT    /api/account(.:format)                                                                   api/account#update
-                                      DELETE /api/account(.:format)                                                                   api/account#destroy
-                                      POST   /api/account(.:format)                                                                   api/account#create
+                    api_account_index POST   /api/account(.:format)                                                                   api/account#create
+                          api_account GET    /api/account/:id(.:format)                                                               api/account#show
+                                      PATCH  /api/account/:id(.:format)                                                               api/account#update
+                                      PUT    /api/account/:id(.:format)                                                               api/account#update
+                                      DELETE /api/account/:id(.:format)                                                               api/account#destroy
                             api_bills GET    /api/bills(.:format)                                                                     api/bill#index
-                             api_bill GET    /api/bill(.:format)                                                                      api/bill#show
-                                      PATCH  /api/bill(.:format)                                                                      api/bill#update
-                                      PUT    /api/bill(.:format)                                                                      api/bill#update
-                                      DELETE /api/bill(.:format)                                                                      api/bill#destroy
-                                      POST   /api/bill(.:format)                                                                      api/bill#create
+                       api_bill_index POST   /api/bill(.:format)                                                                      api/bill#create
+                             api_bill GET    /api/bill/:id(.:format)                                                                  api/bill#show
+                                      PATCH  /api/bill/:id(.:format)                                                                  api/bill#update
+                                      PUT    /api/bill/:id(.:format)                                                                  api/bill#update
+                                      DELETE /api/bill/:id(.:format)                                                                  api/bill#destroy
         rails_postmark_inbound_emails POST   /rails/action_mailbox/postmark/inbound_emails(.:format)                                  action_mailbox/ingresses/postmark/inbound_emails#create
            rails_relay_inbound_emails POST   /rails/action_mailbox/relay/inbound_emails(.:format)                                     action_mailbox/ingresses/relay/inbound_emails#create
         rails_sendgrid_inbound_emails POST   /rails/action_mailbox/sendgrid/inbound_emails(.:format)                                  action_mailbox/ingresses/sendgrid/inbound_emails#create

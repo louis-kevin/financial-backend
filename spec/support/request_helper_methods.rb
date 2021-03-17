@@ -19,8 +19,8 @@ module RequestHelperMethods
     expect(response.content_type).to eq("application/json; charset=utf-8")
   end
 
-  def delete_with_token(url, params, headers = {})
-    delete url, params: params, headers: authorization_header.merge(headers)
+  def delete_with_token(url, headers = {})
+    delete url, headers: authorization_header.merge(headers)
     expect(response.content_type).to eq("application/json; charset=utf-8")
   end
 end

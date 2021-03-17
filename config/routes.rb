@@ -15,12 +15,11 @@ Rails.application.routes.draw do
     end
 
     get '/accounts', to: 'account#index'
-    #noinspection RailsParamDefResolve
-    resource :account, except: [:new, :edit], controller: :account
+    resources :account, except: [:new, :edit, :index]
 
     get '/bills', to: 'bill#index'
     #noinspection RailsParamDefResolve
-    resource :bill, except: [:new, :edit], controller: :bill
+    resources :bill, except: [:new, :edit, :index]
   end
 
 end

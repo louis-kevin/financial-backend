@@ -289,12 +289,15 @@ RSpec.describe "Api::AccountController", type: :request do
     before(:each) do
       @user = create(:user)
       @account = create(:account, user: @user)
+      @bills = create_list(:bill, 5, account: @account)
     end
 
     it 'should delete and return the account data' do
       expect(Account.count).to eq 1
+      expect(Bill.count).to eq 5
       destroy_request @account.id
       expect(Account.count).to eq 0
+      expect(Bill.count).to eq 0
     end
 
     context 'should return error' do
@@ -326,7 +329,7 @@ RSpec.describe "Api::AccountController", type: :request do
   end
 
   def show_request(id, status = :ok)
-    get_with_token api_account_url, { id: id }
+    get_with_token api_account_url(id)
 
     expect(response).to have_http_status(status)
     JSON.parse(response.body)
@@ -334,21 +337,21 @@ RSpec.describe "Api::AccountController", type: :request do
 
   def create_request(params, status = :created)
     expect(Account.count).to eq 0
-    post_with_token api_account_url, params
+    post_with_token api_account_index_url, params
 
     expect(response).to have_http_status(status)
     JSON.parse(response.body)
   end
 
   def update_request(params, status = :ok)
-    put_with_token api_account_url, params
+    put_with_token api_account_url(params[:id]), params
 
     expect(response).to have_http_status(status)
     JSON.parse(response.body)
   end
 
   def destroy_request(id, status = :ok)
-    delete_with_token api_account_url, { id: id }
+    delete_with_token api_account_url(id)
 
     expect(response).to have_http_status(status)
   end
