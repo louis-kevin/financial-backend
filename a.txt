@@ -6,7 +6,8 @@
                    api_user_dashboard GET    /api/user/dashboard(.:format)                                                            api/user#dashboard
                              api_user PUT    /api/user(.:format)                                                                      api/user#update
                     api_user_settings PUT    /api/user/settings(.:format)                                                             api/user#settings
-                         api_accounts GET    /api/accounts(.:format)                                                                  api/account#index
+                 api_account_accounts GET    /api/account/:account_id/accounts(.:format)                                              api/account#index
+           api_account_update_amounts PUT    /api/account/:account_id/accounts(.:format)                                              api/account#update_amounts
                     api_account_index POST   /api/account(.:format)                                                                   api/account#create
                           api_account GET    /api/account/:id(.:format)                                                               api/account#show
                                       PATCH  /api/account/:id(.:format)                                                               api/account#update

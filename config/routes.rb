@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     end
 
     get '/accounts', to: 'account#index'
+    put '/accounts', to: 'account#update_amounts', as: :account_update_amounts
     resources :account, except: [:new, :edit, :index]
 
     get '/bills', to: 'bill#index'

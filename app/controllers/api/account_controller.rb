@@ -1,5 +1,5 @@
 class Api::AccountController < Api::ApplicationController
-  before_action :load_account, except: [:index, :create]
+  before_action :load_account, except: [:index, :create, :update_amounts]
 
   def index
     page = params[:page] || 1
@@ -37,6 +37,29 @@ class Api::AccountController < Api::ApplicationController
     render_json account_as_json(@account)
   end
 
+  def update_amounts
+    accounts = update_amounts_params[:accounts]
+
+    @accounts = current_user.accounts.where(id: accounts.map { |account| account[:id] })
+
+    success = @accounts.empty?
+
+    Account.transaction do
+      @accounts.each do |account|
+        account_updated = accounts.detect { |account_updated| account_updated[:id].to_i == account.id }
+
+        success = account.update amount_cents: account_updated[:amount_cents]
+
+
+        raise ActiveRecord::Rollback unless success
+      end
+    end
+
+    return render_error('Invalid Accounts') unless success
+
+    render_json @accounts.map { |account| account_as_json account }
+  end
+
   private
 
   def load_account
@@ -52,5 +75,9 @@ class Api::AccountController < Api::ApplicationController
   def account_params
     data = params.permit :name, :color, :amount_cents
     data.merge! user: current_user
+  end
+
+  def update_amounts_params
+    params.permit(accounts: [:id, :amount_cents])
   end
 end

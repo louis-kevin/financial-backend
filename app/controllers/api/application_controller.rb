@@ -28,6 +28,10 @@ module Api
       render_json errors.to_h, :unprocessable_entity
     end
 
+    def render_error(message, status: :unprocessable_entity)
+      render_json({ error: message }, status)
+    end
+
     def render_json(data = {}, status = :ok)
       render json: data,
              status: status

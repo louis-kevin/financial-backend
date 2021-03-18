@@ -312,6 +312,67 @@ RSpec.describe "Api::AccountController", type: :request do
     end
   end
 
+  describe 'PUT #update_amounts' do
+    before(:each) do
+      @user = create(:user)
+      @accounts = create_list(:account, 5, user: @user)
+    end
+
+    it 'should update all accounts amount_cents' do
+      new_amounts = @accounts.map do |account|
+        { id: account.id, amount_cents: account.amount_cents + 1 }
+      end
+
+      data = update_amounts_request accounts: new_amounts
+
+      data.each do |account|
+        validate_account_format(account)
+      end
+
+      @accounts.each do |account|
+        account_updated = new_amounts.detect { |account_updated| account_updated[:id] == account.id }
+
+        expect(account.reload.amount_cents).to eq account_updated[:amount_cents]
+      end
+    end
+
+    it 'should not update accounts that not belongs to user' do
+      @accounts = create_list(:account, 5)
+
+      new_amounts = @accounts.map do |account|
+        { id: account.id, amount_cents: account.amount_cents + 1 }
+      end
+
+      data = update_amounts_request accounts: new_amounts
+
+      data.each do |account|
+        validate_account_format(account)
+      end
+
+      @accounts.each do |account|
+        account_updated = new_amounts.detect { |account_updated| account_updated[:id] == account.id }
+
+        expect(account.amount_cents).not_to eq account_updated[:amount_cents]
+      end
+    end
+
+    context 'should return error' do
+      it 'when amount is not a number' do
+        new_amounts = @accounts.map do |account|
+          { id: account.id, amount_cents: 'wrong' }
+        end
+
+        update_amounts_request({ accounts: new_amounts }, :unprocessable_entity)
+
+        @accounts.each do |account|
+          account_updated = new_amounts.detect { |account_updated| account_updated[:id] == account.id }
+
+          expect(account.reload.amount_cents).not_to eq account_updated[:amount_cents]
+        end
+      end
+    end
+  end
+
   private
 
   def index_request
@@ -345,6 +406,13 @@ RSpec.describe "Api::AccountController", type: :request do
 
   def update_request(params, status = :ok)
     put_with_token api_account_url(params[:id]), params
+
+    expect(response).to have_http_status(status)
+    JSON.parse(response.body)
+  end
+
+  def update_amounts_request(params, status = :ok)
+    put_with_token api_account_update_amounts_url, params
 
     expect(response).to have_http_status(status)
     JSON.parse(response.body)
