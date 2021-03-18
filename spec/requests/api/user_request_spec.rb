@@ -24,7 +24,6 @@ RSpec.describe "Api::User", type: :request do
         expect(response).to have_http_status(:ok)
 
         data = JSON.parse(response.body)
-        expect(data["accounts"]).to be_empty
         expect(data["total_amount_cents"]).to eq 0
         # Checking only if data is same in methods, to check calculations see user_config_spec.rb
         expect(data["days_until_payment"]).to eq user_config.days_until_payment
@@ -46,9 +45,6 @@ RSpec.describe "Api::User", type: :request do
         expect(response).to have_http_status(:ok)
 
         data = JSON.parse(response.body)
-        expect(data["accounts"].count).to eq accounts.count
-        account_ids = data["accounts"].map{|account| account["id"]}
-        expect(account_ids).to eq accounts.map(&:id)
         expect(data["total_amount_cents"]).to eq total_amount
         # Checking only if data is same in methods, to check calculations see user_config_spec.rb
         expect(data["days_until_payment"]).to eq user_config.days_until_payment
@@ -77,9 +73,6 @@ RSpec.describe "Api::User", type: :request do
         expect(response).to have_http_status(:ok)
 
         data = JSON.parse(response.body)
-        expect(data["accounts"].count).to eq accounts.count
-        account_ids = data["accounts"].map { |account| account["id"] }
-        expect(account_ids).to eq accounts.map(&:id)
         expect(data["total_amount_cents"]).to eq total_amount_cents
         # Checking only if data is same in methods, to check calculations see user_config_spec.rb
         expect(data["days_until_payment"]).to eq user_config.days_until_payment

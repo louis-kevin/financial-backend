@@ -3,14 +3,9 @@ class Api::UserController < Api::ApplicationController
   before_action :check_user_config, only: [:dashboard]
 
   def dashboard
-    accounts = current_user.accounts.map do |account|
-      { id: account.id, name: account.name, color: account.color, amount_cents: account.total_amount_cents }
-    end
-
     user_config = current_user.user_config
 
     data = {
-      accounts: accounts,
       total_amount_cents: current_user.total_amount_cents,
     }.merge(user_config.to_data)
 
