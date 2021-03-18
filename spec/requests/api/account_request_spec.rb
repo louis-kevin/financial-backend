@@ -425,7 +425,7 @@ RSpec.describe "Api::AccountController", type: :request do
   end
 
   def validate_account_format(data)
-    expect(data).to include "id", "name", "color", "amount_cents", "created_at", "updated_at", "user_id"
+    expect(data).to include "id", "name", "color", "amount_cents", "total_amount_cents", "created_at", "updated_at", "user_id"
     data
   end
 

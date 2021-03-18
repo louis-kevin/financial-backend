@@ -69,7 +69,9 @@ class Api::AccountController < Api::ApplicationController
   end
 
   def account_as_json(account)
-    account.as_json(only: [:id, :name, :color, :amount_cents, :created_at, :user_id, :updated_at])
+    data = account.as_json(only: [:id, :name, :color, :amount_cents, :created_at, :user_id, :updated_at])
+    data[:total_amount_cents] = account.total_amount_cents
+    data
   end
 
   def account_params
