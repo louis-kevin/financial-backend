@@ -42,6 +42,10 @@ jobs:
       DATABASE_HOST: localhost
 
     steps:
+      - name: Cancel Previous Workflow Runs
+        uses: n1hility/cancel-previous-runs@v2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Checking out Code
         uses: actions/checkout@v2
 
