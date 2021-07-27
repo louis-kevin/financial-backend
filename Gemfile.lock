@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/mimemagicrb/mimemagic.git
+  revision: 01f92d86d15d85cfd0f20dabd025dcbd36a8a60f
+  ref: 01f92d86d15d85cfd0f20dabd025dcbd36a8a60f
+  specs:
+    mimemagic (0.3.5)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -122,9 +129,8 @@ GEM
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
     method_source (1.0.0)
-    mimemagic (0.3.5)
     mini_mime (1.0.2)
-    mini_portile2 (2.5.0)
+    mini_portile2 (2.5.3)
     minitest (5.14.4)
     monetize (1.9.4)
       money (~> 6.12)
@@ -138,7 +144,7 @@ GEM
     msgpack (1.3.3)
     newrelic_rpm (6.11.0.365)
     nio4r (2.5.7)
-    nokogiri (1.11.1)
+    nokogiri (1.11.7)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     parser (2.7.1.4)
@@ -251,6 +257,7 @@ DEPENDENCIES
   kaminari
   letter_opener
   listen (>= 3.0.5, < 3.2)
+  mimemagic!
   money-rails
   newrelic_rpm
   pg (>= 0.18, < 2.0)
