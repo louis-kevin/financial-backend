@@ -31,8 +31,6 @@ jobs:
         # Docker Hub image
         image: redis
         # Set health checks to wait until redis has started
-        ports:
-          - 6379:6379
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
@@ -43,7 +41,7 @@ jobs:
       RAILS_ENV: test
       DATABASE_HOST: localhost
       REDIS_HOST: redis
-      REDIS_PORT: ${{ job.services.redis.ports[6379] }}
+      REDIS_PORT: 6379
     steps:
       - name: Cancel Previous Workflow Runs
         uses: n1hility/cancel-previous-runs@v2.0
