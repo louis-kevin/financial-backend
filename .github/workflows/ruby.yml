@@ -42,7 +42,7 @@ jobs:
     env:
       RAILS_ENV: test
       DATABASE_HOST: localhost
-      REDIS_URL: redis://redis:6379/0
+      REDIS_URL: redis://localhost:6379/0
     steps:
       - name: Cancel Previous Workflow Runs
         uses: n1hility/cancel-previous-runs@v2.0
