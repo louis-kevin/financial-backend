@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserConfig < ApplicationRecord
   belongs_to :user
 
@@ -9,7 +11,9 @@ class UserConfig < ApplicationRecord
   validates :day, presence: true, numericality: {
     only_integer: true,
     greater_than_or_equal_to: 1,
-    less_than_or_equal_to: ->(config) { config.day_type == :all_days.to_s ? 31 : 20 } # TODO Check if is necessary (28 days max)
+    less_than_or_equal_to: lambda { |config|
+                             config.day_type == :all_days.to_s ? 31 : 20
+                           } # TODO: Check if is necessary (28 days max)
   }
   validates :day_type, presence: true, inclusion: { in: day_types.keys }
   validates :income_cents, numericality: { only_integer: true }
@@ -24,7 +28,7 @@ class UserConfig < ApplicationRecord
       last_payment: last_payment,
       next_payment: next_payment,
       weekdays_until_payment: weekdays_until_payment,
-      weekend_until_payment: weekend_until_payment,
+      weekend_until_payment: weekend_until_payment
     }
   end
 
@@ -35,7 +39,7 @@ class UserConfig < ApplicationRecord
 
     last_payment = date.change(day: day)
 
-    last_payment = last_payment - 1.month if last_payment > date
+    last_payment -= 1.month if last_payment > date
 
     if last_payment.on_weekend?
       last_payment = if next_work_day?
@@ -55,7 +59,7 @@ class UserConfig < ApplicationRecord
 
     next_payment = date.change(day: day)
 
-    next_payment = next_payment + 1.month if next_payment <= date
+    next_payment += 1.month if next_payment <= date
 
     if next_payment.on_weekend?
       next_payment = if next_work_day?

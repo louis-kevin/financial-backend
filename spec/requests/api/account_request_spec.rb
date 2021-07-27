@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe "Api::AccountController", type: :request do
+RSpec.describe 'Api::AccountController', type: :request do
   describe 'GET #index' do
     before(:each) do
       @user = create(:user)
@@ -8,17 +10,17 @@ RSpec.describe "Api::AccountController", type: :request do
     end
 
     context 'with empty accounts' do
-      it "should response with a empty account page list and pagination" do
+      it 'should response with a empty account page list and pagination' do
         data = index_request
 
-        items = data["data"]
+        items = data['data']
 
         expect(items.count).to eq 0
-        expect(data["page"]).to eq @params[:page]
-        expect(data["next_page"]).to be_nil
-        expect(data["prev_page"]).to be_nil
-        expect(data["total"]).to eq 0
-        expect(data["needs_load_more"]).to be_falsey
+        expect(data['page']).to eq @params[:page]
+        expect(data['next_page']).to be_nil
+        expect(data['prev_page']).to be_nil
+        expect(data['total']).to eq 0
+        expect(data['needs_load_more']).to be_falsey
       end
     end
 
@@ -27,59 +29,59 @@ RSpec.describe "Api::AccountController", type: :request do
         @accounts = create_list(:account, @params[:total], user: @user)
       end
 
-      it "should response with the first page of accounts list ordered by name and pagination" do
+      it 'should response with the first page of accounts list ordered by name and pagination' do
         data = index_request
 
-        items = data["data"]
+        items = data['data']
 
         expect(items.count).to eq @params[:limit]
-        expect(data["page"]).to eq @params[:page]
-        expect(data["next_page"]).to eq @params[:page] + 1
-        expect(data["prev_page"]).to be_nil
-        expect(data["total"]).to eq @params[:total]
-        expect(data["needs_load_more"]).to be_truthy
+        expect(data['page']).to eq @params[:page]
+        expect(data['next_page']).to eq @params[:page] + 1
+        expect(data['prev_page']).to be_nil
+        expect(data['total']).to eq @params[:total]
+        expect(data['needs_load_more']).to be_truthy
 
-        response_names = items.pluck("name")
+        response_names = items.pluck('name')
         accounts_names = @accounts.pluck(:name).sort[0..9]
 
         expect(accounts_names).to eq response_names
       end
 
-      it "should response with second page of accounts list ordered by name and pagination" do
+      it 'should response with second page of accounts list ordered by name and pagination' do
         @params[:page] = 2
 
         data = index_request
 
-        items = data["data"]
+        items = data['data']
 
         expect(items.count).to eq @params[:limit]
-        expect(data["page"]).to eq @params[:page]
-        expect(data["next_page"]).to eq @params[:page] + 1
-        expect(data["prev_page"]).to eq @params[:page] - 1
-        expect(data["total"]).to eq @params[:total]
-        expect(data["needs_load_more"]).to be_truthy
+        expect(data['page']).to eq @params[:page]
+        expect(data['next_page']).to eq @params[:page] + 1
+        expect(data['prev_page']).to eq @params[:page] - 1
+        expect(data['total']).to eq @params[:total]
+        expect(data['needs_load_more']).to be_truthy
 
-        response_names = items.pluck("name")
+        response_names = items.pluck('name')
         accounts_names = @accounts.pluck(:name).sort[10..19]
 
         expect(accounts_names).to eq response_names
       end
 
-      it "should response with last page of accounts list ordered by name and pagination" do
+      it 'should response with last page of accounts list ordered by name and pagination' do
         @params[:page] = 5
 
         data = index_request
 
-        items = data["data"]
+        items = data['data']
 
         expect(items.count).to eq @params[:limit]
-        expect(data["page"]).to eq @params[:page]
-        expect(data["next_page"]).to be_nil
-        expect(data["prev_page"]).to eq @params[:page] - 1
-        expect(data["total"]).to eq @params[:total]
-        expect(data["needs_load_more"]).to be_falsey
+        expect(data['page']).to eq @params[:page]
+        expect(data['next_page']).to be_nil
+        expect(data['prev_page']).to eq @params[:page] - 1
+        expect(data['total']).to eq @params[:total]
+        expect(data['needs_load_more']).to be_falsey
 
-        response_names = items.pluck("name")
+        response_names = items.pluck('name')
         accounts_names = @accounts.pluck(:name).sort[40..49]
 
         expect(accounts_names).to eq response_names
@@ -161,14 +163,14 @@ RSpec.describe "Api::AccountController", type: :request do
           @data.extract! :name
           data = create_request @data, :unprocessable_entity
           expect(Account.count).to eq 0
-          expect(data).to include "name"
+          expect(data).to include 'name'
         end
 
         it 'because is empty' do
           @data[:name] = ''
           data = create_request @data, :unprocessable_entity
           expect(Account.count).to eq 0
-          expect(data).to include "name"
+          expect(data).to include 'name'
         end
       end
 
@@ -177,22 +179,21 @@ RSpec.describe "Api::AccountController", type: :request do
           @data.extract! :color
           data = create_request @data, :unprocessable_entity
           expect(Account.count).to eq 0
-          expect(data).to include "color"
-
+          expect(data).to include 'color'
         end
 
         it 'because is empty' do
           @data[:color] = ''
           data = create_request @data, :unprocessable_entity
           expect(Account.count).to eq 0
-          expect(data).to include "color"
+          expect(data).to include 'color'
         end
 
         it 'because is wrong format' do
           @data[:color] = 'wrong format'
           data = create_request @data, :unprocessable_entity
           expect(Account.count).to eq 0
-          expect(data).to include "color"
+          expect(data).to include 'color'
         end
       end
 
@@ -201,7 +202,7 @@ RSpec.describe "Api::AccountController", type: :request do
           @data[:amount_cents] = ''
           data = create_request @data, :unprocessable_entity
           expect(Account.count).to eq 0
-          expect(data).to include "amount_cents"
+          expect(data).to include 'amount_cents'
         end
       end
     end
@@ -211,7 +212,8 @@ RSpec.describe "Api::AccountController", type: :request do
     before(:each) do
       @user = create(:user)
       @account = create(:account, user: @user)
-      same_data = { user: @user, created_at: @account.created_at, id: @account.id, updated_at: @account.updated_at - 1.second }
+      same_data = { user: @user, created_at: @account.created_at, id: @account.id,
+                    updated_at: @account.updated_at - 1.second }
       @new_data = build(:account, same_data)
       @data = {
         id: @account.id,
@@ -225,7 +227,7 @@ RSpec.describe "Api::AccountController", type: :request do
       expect(Account.count).to eq 1
       data = update_request @data
       validate_account_format(data)
-      compare_data_and_model data, @new_data, true
+      compare_data_and_model data, @new_data, updated: true
     end
 
     it 'should not update the user_id' do
@@ -234,7 +236,7 @@ RSpec.describe "Api::AccountController", type: :request do
       @data[:user_id] = new_user.id
       data = update_request @data
       validate_account_format(data)
-      compare_data_and_model data, @new_data, true
+      compare_data_and_model data, @new_data, updated: true
     end
 
     it 'should not update when passing amount' do
@@ -258,20 +260,20 @@ RSpec.describe "Api::AccountController", type: :request do
         it 'because is missing' do
           @data[:name] = ''
           data = update_request @data, :unprocessable_entity
-          expect(data).to include "name"
+          expect(data).to include 'name'
         end
       end
       context 'when color field is wrong' do
         it 'because is wrong format' do
           @data[:color] = 'wrong format'
           data = update_request @data, :unprocessable_entity
-          expect(data).to include "color"
+          expect(data).to include 'color'
         end
 
         it 'because is missing' do
           @data[:color] = ''
           data = update_request @data, :unprocessable_entity
-          expect(data).to include "color"
+          expect(data).to include 'color'
         end
       end
 
@@ -279,7 +281,7 @@ RSpec.describe "Api::AccountController", type: :request do
         it 'because is not a number' do
           @data[:amount_cents] = ''
           data = update_request @data, :unprocessable_entity
-          expect(data).to include "amount"
+          expect(data).to include 'amount'
         end
       end
     end
@@ -330,9 +332,9 @@ RSpec.describe "Api::AccountController", type: :request do
       end
 
       @accounts.each do |account|
-        account_updated = new_amounts.detect { |account_updated| account_updated[:id] == account.id }
+        new_account_updated = new_amounts.detect { |account_updated| account_updated[:id] == account.id }
 
-        expect(account.reload.amount_cents).to eq account_updated[:amount_cents]
+        expect(account.reload.amount_cents).to eq new_account_updated[:amount_cents]
       end
     end
 
@@ -350,9 +352,9 @@ RSpec.describe "Api::AccountController", type: :request do
       end
 
       @accounts.each do |account|
-        account_updated = new_amounts.detect { |account_updated| account_updated[:id] == account.id }
+        new_account_updated = new_amounts.detect { |account_updated| account_updated[:id] == account.id }
 
-        expect(account.amount_cents).not_to eq account_updated[:amount_cents]
+        expect(account.amount_cents).not_to eq new_account_updated[:amount_cents]
       end
     end
 
@@ -365,9 +367,9 @@ RSpec.describe "Api::AccountController", type: :request do
         update_amounts_request({ accounts: new_amounts }, :unprocessable_entity)
 
         @accounts.each do |account|
-          account_updated = new_amounts.detect { |account_updated| account_updated[:id] == account.id }
+          new_account_updated = new_amounts.detect { |account_updated| account_updated[:id] == account.id }
 
-          expect(account.reload.amount_cents).not_to eq account_updated[:amount_cents]
+          expect(account.reload.amount_cents).not_to eq new_account_updated[:amount_cents]
         end
       end
     end
@@ -382,9 +384,9 @@ RSpec.describe "Api::AccountController", type: :request do
 
     data = JSON.parse(response.body)
 
-    expect(data).to include "data", "total", "page", "next_page", "prev_page", "needs_load_more"
+    expect(data).to include 'data', 'total', 'page', 'next_page', 'prev_page', 'needs_load_more'
 
-    data["data"].each { |account| validate_account_format account }
+    data['data'].each { |account| validate_account_format account }
 
     data
   end
@@ -425,26 +427,30 @@ RSpec.describe "Api::AccountController", type: :request do
   end
 
   def validate_account_format(data)
-    expect(data).to include "id", "name", "color", "amount_cents", "total_amount_cents", "created_at", "updated_at", "user_id"
+    expect(data).to include 'id', 'name', 'color', 'amount_cents', 'total_amount_cents', 'created_at', 'updated_at',
+                            'user_id'
     data
   end
 
-  def compare_data_and_model(data, account, updated = false)
-    expect(data["name"]).to eq account.name
-    expect(data["color"]).to eq account.color
-    expect(data["amount_cents"]).to eq account.amount_cents.to_f
-    expect(data["user_id"]).to eq account.user_id
+  def compare_data_and_model(data, account, updated: false)
+    compare_info(data, account)
 
-    if account.id?
-      expect(data["id"]).to eq account.id if account.id?
-      expect(DateTime.parse(data["created_at"]).to_i).to eq account.created_at.to_i
+    return unless account.id?
 
-      if updated
-        expect(DateTime.parse(data["updated_at"]).to_i).to be > account.updated_at.to_i
-      else
-        expect(DateTime.parse(data["updated_at"]).to_i).to eq account.updated_at.to_i
-      end
+    expect(data['id']).to eq account.id if account.id?
+    expect(DateTime.parse(data['created_at']).to_i).to eq account.created_at.to_i
 
+    if updated
+      expect(DateTime.parse(data['updated_at']).to_i).to be > account.updated_at.to_i
+    else
+      expect(DateTime.parse(data['updated_at']).to_i).to eq account.updated_at.to_i
     end
+  end
+
+  def compare_info(data, account)
+    expect(data['name']).to eq account.name
+    expect(data['color']).to eq account.color
+    expect(data['amount_cents']).to eq account.amount_cents.to_f
+    expect(data['user_id']).to eq account.user_id
   end
 end

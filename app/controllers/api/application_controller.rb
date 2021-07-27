@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Api
   class ApplicationController < ActionController::API
     AUTHORIZATION_HEADER_KEY = 'authorization'
 
-    #noinspection RubyResolve
+    # noinspection RubyResolve
     before_action :authenticate_request
     attr_reader :current_user
 
@@ -25,7 +27,7 @@ module Api
     end
 
     def invalid_messages(errors)
-      render_json errors.to_h, :unprocessable_entity
+      render_json errors.to_hash, :unprocessable_entity
     end
 
     def render_error(message, status: :unprocessable_entity)
@@ -38,20 +40,19 @@ module Api
     end
 
     # Needs to be a Kaminari Paginator
-    def render_pagination(results)
-      out_of_bounds = results.total_count == 0 || results.last_page?
+    def render_pagination(results, &block)
+      out_of_bounds = results.total_count.zero? || results.last_page?
 
       response = {
-        data: results.map { |item| yield(item) },
+        data: results.map(&block),
         total: results.total_count,
         page: results.current_page,
         next_page: results.next_page,
         prev_page: results.prev_page,
-        needs_load_more: !out_of_bounds,
+        needs_load_more: !out_of_bounds
       }
 
       render_json response
     end
   end
-
 end

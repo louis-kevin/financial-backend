@@ -1,19 +1,21 @@
+# frozen_string_literal: true
+
 module JwtAuthenticable
   extend ActiveSupport::Concern
 
   included do
     def self.find_by_jwt_token(token)
-      token.gsub! 'Bearer ', ''
+      return unless token.include?('Bearer ')
+      token = token.split(' ').last
       data = JsonWebToken.decode(token)
 
       return unless data
 
       id = data[:id]
 
-      self.find(id)
+      find(id)
     end
   end
-
 
   def generate_jwt_token
     payload = { id: id }

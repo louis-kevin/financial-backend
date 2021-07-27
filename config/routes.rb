@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :api do
@@ -16,11 +18,10 @@ Rails.application.routes.draw do
 
     get '/accounts', to: 'account#index'
     put '/accounts', to: 'account#update_amounts', as: :account_update_amounts
-    resources :account, except: [:new, :edit, :index]
+    resources :account, except: %i[new edit index]
 
     get '/bills', to: 'bill#index'
-    #noinspection RailsParamDefResolve
-    resources :bill, except: [:new, :edit, :index]
+    # noinspection RailsParamDefResolve
+    resources :bill, except: %i[new edit index]
   end
-
 end

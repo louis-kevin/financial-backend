@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe UserConfig, type: :model do
@@ -51,7 +53,7 @@ RSpec.describe UserConfig, type: :model do
         Date.new(2020, 12, 18)
       }
 
-      expect(user_config.next_payment).to eq Date.new(2021, 01, 15)
+      expect(user_config.next_payment).to eq Date.new(2021, 0o1, 15)
     end
 
     it 'should return next month when is in the configured day' do
@@ -61,7 +63,7 @@ RSpec.describe UserConfig, type: :model do
         Date.new(2020, 12, 15)
       }
 
-      expect(user_config.next_payment).to eq Date.new(2021, 01, 15)
+      expect(user_config.next_payment).to eq Date.new(2021, 0o1, 15)
     end
 
     context 'when next_payment day is in weekend' do
@@ -151,7 +153,7 @@ RSpec.describe UserConfig, type: :model do
     end
   end
 
-  describe "#weekend_until_payment" do
+  describe '#weekend_until_payment' do
     it 'should return 6 when is just a week from the configured day' do
       user_config = create(:user_config)
       allow(Date).to receive(:today) {

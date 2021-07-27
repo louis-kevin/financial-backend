@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe "Api::Bills", type: :request do
+RSpec.describe 'Api::Bills', type: :request do
   describe 'GET #index' do
     before(:each) do
       @user = create(:user)
@@ -9,17 +11,17 @@ RSpec.describe "Api::Bills", type: :request do
     end
 
     context 'with empty bills' do
-      it "should response with a empty bill page list and pagination" do
+      it 'should response with a empty bill page list and pagination' do
         data = index_request
 
-        items = data["data"]
+        items = data['data']
 
         expect(items.count).to eq 0
-        expect(data["page"]).to eq @params[:page]
-        expect(data["next_page"]).to be_nil
-        expect(data["prev_page"]).to be_nil
-        expect(data["total"]).to eq 0
-        expect(data["needs_load_more"]).to be_falsey
+        expect(data['page']).to eq @params[:page]
+        expect(data['next_page']).to be_nil
+        expect(data['prev_page']).to be_nil
+        expect(data['total']).to eq 0
+        expect(data['needs_load_more']).to be_falsey
       end
     end
 
@@ -35,14 +37,14 @@ RSpec.describe "Api::Bills", type: :request do
             @params[:account_id] = @accounts.first.id
             data = index_request
 
-            items = data["data"]
+            items = data['data']
 
             expect(items.count).to eq @params[:limit]
-            expect(data["page"]).to eq @params[:page]
-            expect(data["next_page"]).to eq @params[:page] + 1
-            expect(data["prev_page"]).to be_nil
-            expect(data["total"]).to eq @params[:total]
-            expect(data["needs_load_more"]).to be_truthy
+            expect(data['page']).to eq @params[:page]
+            expect(data['next_page']).to eq @params[:page] + 1
+            expect(data['prev_page']).to be_nil
+            expect(data['total']).to eq @params[:total]
+            expect(data['needs_load_more']).to be_truthy
 
             validate_bill_names items, @bills_from_first_account
           end
@@ -51,14 +53,14 @@ RSpec.describe "Api::Bills", type: :request do
             @params[:account_id] = @accounts.second.id
             data = index_request
 
-            items = data["data"]
+            items = data['data']
 
             expect(items.count).to eq @params[:limit]
-            expect(data["page"]).to eq @params[:page]
-            expect(data["next_page"]).to eq @params[:page] + 1
-            expect(data["prev_page"]).to be_nil
-            expect(data["total"]).to eq @params[:total]
-            expect(data["needs_load_more"]).to be_truthy
+            expect(data['page']).to eq @params[:page]
+            expect(data['next_page']).to eq @params[:page] + 1
+            expect(data['prev_page']).to be_nil
+            expect(data['total']).to eq @params[:total]
+            expect(data['needs_load_more']).to be_truthy
 
             validate_bill_names items, @bills_from_second_account
           end
@@ -69,14 +71,14 @@ RSpec.describe "Api::Bills", type: :request do
             @params[:account_id] = @accounts.first.id
             data = index_request
 
-            items = data["data"]
+            items = data['data']
 
             expect(items.count).to eq @params[:limit]
-            expect(data["page"]).to eq @params[:page]
-            expect(data["next_page"]).to eq @params[:page] + 1
-            expect(data["prev_page"]).to eq @params[:page] - 1
-            expect(data["total"]).to eq @params[:total]
-            expect(data["needs_load_more"]).to be_truthy
+            expect(data['page']).to eq @params[:page]
+            expect(data['next_page']).to eq @params[:page] + 1
+            expect(data['prev_page']).to eq @params[:page] - 1
+            expect(data['total']).to eq @params[:total]
+            expect(data['needs_load_more']).to be_truthy
 
             validate_bill_names items, @bills_from_first_account
           end
@@ -86,14 +88,14 @@ RSpec.describe "Api::Bills", type: :request do
             @params[:account_id] = @accounts.second.id
             data = index_request
 
-            items = data["data"]
+            items = data['data']
 
             expect(items.count).to eq @params[:limit]
-            expect(data["page"]).to eq @params[:page]
-            expect(data["next_page"]).to eq @params[:page] + 1
-            expect(data["prev_page"]).to eq @params[:page] - 1
-            expect(data["total"]).to eq @params[:total]
-            expect(data["needs_load_more"]).to be_truthy
+            expect(data['page']).to eq @params[:page]
+            expect(data['next_page']).to eq @params[:page] + 1
+            expect(data['prev_page']).to eq @params[:page] - 1
+            expect(data['total']).to eq @params[:total]
+            expect(data['needs_load_more']).to be_truthy
 
             validate_bill_names items, @bills_from_second_account
           end
@@ -104,14 +106,14 @@ RSpec.describe "Api::Bills", type: :request do
             @params[:account_id] = @accounts.first.id
             data = index_request
 
-            items = data["data"]
+            items = data['data']
 
             expect(items.count).to eq @params[:limit]
-            expect(data["page"]).to eq @params[:page]
-            expect(data["next_page"]).to be_nil
-            expect(data["prev_page"]).to eq @params[:page] - 1
-            expect(data["total"]).to eq @params[:total]
-            expect(data["needs_load_more"]).to be_falsey
+            expect(data['page']).to eq @params[:page]
+            expect(data['next_page']).to be_nil
+            expect(data['prev_page']).to eq @params[:page] - 1
+            expect(data['total']).to eq @params[:total]
+            expect(data['needs_load_more']).to be_falsey
 
             validate_bill_names items, @bills_from_first_account
           end
@@ -121,14 +123,14 @@ RSpec.describe "Api::Bills", type: :request do
             @params[:account_id] = @accounts.second.id
             data = index_request
 
-            items = data["data"]
+            items = data['data']
 
             expect(items.count).to eq @params[:limit]
-            expect(data["page"]).to eq @params[:page]
-            expect(data["next_page"]).to be_nil
-            expect(data["prev_page"]).to eq @params[:page] - 1
-            expect(data["total"]).to eq @params[:total]
-            expect(data["needs_load_more"]).to be_falsey
+            expect(data['page']).to eq @params[:page]
+            expect(data['next_page']).to be_nil
+            expect(data['prev_page']).to eq @params[:page] - 1
+            expect(data['total']).to eq @params[:total]
+            expect(data['needs_load_more']).to be_falsey
 
             validate_bill_names items, @bills_from_second_account
           end
@@ -212,7 +214,7 @@ RSpec.describe "Api::Bills", type: :request do
       expect(Bill.count).to eq 1
       @bill = Bill.first
       validate_bill_format(data)
-      expect(data["payment_day"]).to be_nil
+      expect(data['payment_day']).to be_nil
       compare_data_and_model data, @bill
     end
 
@@ -222,7 +224,7 @@ RSpec.describe "Api::Bills", type: :request do
       expect(Bill.count).to eq 1
       @bill = Bill.first
       validate_bill_format(data)
-      expect(data["payment_day"]).to be_present
+      expect(data['payment_day']).to be_present
       compare_data_and_model data, @bill
     end
 
@@ -232,14 +234,14 @@ RSpec.describe "Api::Bills", type: :request do
           @data.extract! :name
           data = create_request @data, :unprocessable_entity
           expect(Bill.count).to eq 0
-          expect(data).to include "name"
+          expect(data).to include 'name'
         end
 
         it 'because is empty' do
           @data[:name] = ''
           data = create_request @data, :unprocessable_entity
           expect(Bill.count).to eq 0
-          expect(data).to include "name"
+          expect(data).to include 'name'
         end
       end
 
@@ -249,25 +251,25 @@ RSpec.describe "Api::Bills", type: :request do
           @data[:repetition_type] = :monthly
           data = create_request @data, :unprocessable_entity
           expect(Bill.count).to eq 0
-          expect(data).to include "payment_day"
+          expect(data).to include 'payment_day'
         end
         it 'because is empty' do
           @data[:payment_day] = ''
           data = create_request @data, :unprocessable_entity
           expect(Bill.count).to eq 0
-          expect(data).to include "payment_day"
+          expect(data).to include 'payment_day'
         end
         it 'because is payment_day greater than 31' do
           @data[:payment_day] = 32
           data = create_request @data, :unprocessable_entity
           expect(Bill.count).to eq 0
-          expect(data).to include "payment_day"
+          expect(data).to include 'payment_day'
         end
         it 'because is payment_day less than 1' do
           @data[:payment_day] = 0
           data = create_request @data, :unprocessable_entity
           expect(Bill.count).to eq 0
-          expect(data).to include "payment_day"
+          expect(data).to include 'payment_day'
         end
       end
 
@@ -275,26 +277,26 @@ RSpec.describe "Api::Bills", type: :request do
         it 'because is missing' do
           data = create_request @data.except(:amount_cents), :unprocessable_entity
           expect(Bill.count).to eq 0
-          expect(data).to include "amount_cents"
+          expect(data).to include 'amount_cents'
         end
         it 'because is not a number' do
           @data[:amount_cents] = ''
           data = create_request @data, :unprocessable_entity
           expect(Bill.count).to eq 0
-          expect(data).to include "amount_cents"
+          expect(data).to include 'amount_cents'
         end
         it 'because is equal to 0' do
           @data[:amount_cents] = 0
           data = create_request @data, :unprocessable_entity
           expect(Bill.count).to eq 0
-          expect(data).to include "amount_cents"
+          expect(data).to include 'amount_cents'
         end
 
         it 'because is a double' do
           @data[:amount_cents] = 12.3
           data = create_request @data, :unprocessable_entity
           expect(Bill.count).to eq 0
-          expect(data).to include "amount_cents"
+          expect(data).to include 'amount_cents'
         end
       end
 
@@ -302,13 +304,13 @@ RSpec.describe "Api::Bills", type: :request do
         it 'with repetition_type missing' do
           data = create_request @data.except(:repetition_type), :unprocessable_entity
 
-          expect(data).to include "repetition_type"
+          expect(data).to include 'repetition_type'
         end
         it 'with invalid repetition_type' do
           @data[:repetition_type] = :wrong.to_s
           data = create_request @data, :unprocessable_entity
 
-          expect(data).to include "repetition_type"
+          expect(data).to include 'repetition_type'
         end
       end
     end
@@ -344,7 +346,7 @@ RSpec.describe "Api::Bills", type: :request do
       expect(Bill.count).to eq 1
       data = update_request @data
       validate_bill_format(data)
-      compare_data_and_model data, @new_data, true
+      compare_data_and_model data, @new_data, updated: true
     end
 
     it 'should empty the payment day when updating to daily' do
@@ -356,7 +358,7 @@ RSpec.describe "Api::Bills", type: :request do
       expect(Bill.count).to eq 1
       data = update_request @data
       validate_bill_format(data)
-      compare_data_and_model data, @new_data, true
+      compare_data_and_model data, @new_data, updated: true
       expect(@bill.reload.payment_day).to be_nil
     end
 
@@ -369,7 +371,7 @@ RSpec.describe "Api::Bills", type: :request do
       expect(Bill.count).to eq 1
       data = update_request @data
       validate_bill_format(data)
-      compare_data_and_model data, @new_data, true
+      compare_data_and_model data, @new_data, updated: true
       expect(@bill.reload.payment_day).to be_present
     end
 
@@ -383,7 +385,7 @@ RSpec.describe "Api::Bills", type: :request do
       expect(Bill.count).to eq 1
       data = update_request @data
       validate_bill_format(data)
-      compare_data_and_model data, @new_data, true
+      compare_data_and_model data, @new_data, updated: true
       expect(@bill.reload.payment_day).to be_nil
     end
 
@@ -394,7 +396,7 @@ RSpec.describe "Api::Bills", type: :request do
       old_user_id = @bill.user.id
       data = update_request @data
       validate_bill_format(data)
-      compare_data_and_model data, @new_data, true
+      compare_data_and_model data, @new_data, updated: true
       @bill.reload
       expect(@bill.user.id).to eq old_user_id
     end
@@ -433,7 +435,7 @@ RSpec.describe "Api::Bills", type: :request do
           @data[:name] = ''
           old_name = @bill.name
           data = update_request @data, :unprocessable_entity
-          expect(data).to include "name"
+          expect(data).to include 'name'
           @bill.reload
           expect(@bill.name).to eq old_name
         end
@@ -448,17 +450,17 @@ RSpec.describe "Api::Bills", type: :request do
           @data[:repetition_type] = :monthly
           @data.extract! :payment_day
           data = update_request @data, :unprocessable_entity
-          expect(data).to include "payment_day"
+          expect(data).to include 'payment_day'
         end
         it 'because is payment_day greater than 31' do
           @data[:payment_day] = 32
           data = update_request @data, :unprocessable_entity
-          expect(data).to include "payment_day"
+          expect(data).to include 'payment_day'
         end
         it 'because is payment_day less than 1' do
           @data[:payment_day] = 0
           data = update_request @data, :unprocessable_entity
-          expect(data).to include "payment_day"
+          expect(data).to include 'payment_day'
         end
       end
 
@@ -466,22 +468,22 @@ RSpec.describe "Api::Bills", type: :request do
         it 'because is not a number' do
           @data[:amount_cents] = ''
           data = update_request @data, :unprocessable_entity
-          expect(data).to include "amount_cents"
+          expect(data).to include 'amount_cents'
         end
         it 'because is equal to 0' do
           @data[:amount_cents] = 0
           data = update_request @data, :unprocessable_entity
-          expect(data).to include "amount_cents"
+          expect(data).to include 'amount_cents'
         end
         it 'because is a double' do
           @data[:amount_cents] = 12.3
           data = update_request @data, :unprocessable_entity
-          expect(data).to include "amount_cents"
+          expect(data).to include 'amount_cents'
         end
       end
 
       context 'when has invalid repetition_type' do
-        # TODO Check why is valid? is true
+        # TODO: Check why is valid? is true
         # it 'with invalid repetition_type' do
         #   @data[:repetition_type] = :wrong
         #   data = update_request @data, :unprocessable_entity
@@ -524,9 +526,9 @@ RSpec.describe "Api::Bills", type: :request do
 
     data = JSON.parse(response.body)
 
-    expect(data).to include "data", "total", "page", "next_page", "prev_page", "needs_load_more"
+    expect(data).to include 'data', 'total', 'page', 'next_page', 'prev_page', 'needs_load_more'
 
-    data["data"].each { |bill| validate_bill_format bill }
+    data['data'].each { |bill| validate_bill_format bill }
 
     data
   end
@@ -560,7 +562,7 @@ RSpec.describe "Api::Bills", type: :request do
   end
 
   def validate_bill_names(items, list)
-    response_names = items.pluck("name")
+    response_names = items.pluck('name')
 
     bill_sorted = list.sort do |a, b|
       result = b.repetition_type <=> a.repetition_type
@@ -579,34 +581,38 @@ RSpec.describe "Api::Bills", type: :request do
   end
 
   def validate_bill_format(data)
-    expect(data).to include "id",
-                            "name",
-                            "repetition_type",
-                            "amount_cents",
-                            "payed",
-                            "payment_day",
-                            "created_at",
-                            "updated_at",
-                            "account_id"
+    expect(data).to include 'id',
+                            'name',
+                            'repetition_type',
+                            'amount_cents',
+                            'payed',
+                            'payment_day',
+                            'created_at',
+                            'updated_at',
+                            'account_id'
     data
   end
 
-  def compare_data_and_model(data, bill, updated = false)
-    expect(data["name"]).to eq bill.name
-    expect(data["repetition_type"]).to eq bill.repetition_type
-    expect(data["amount_cents"]).to eq bill.amount_cents
-    expect(data["payed"]).to eq bill.payed
-    expect(data["payment_day"]).to eq bill.payment_day
+  def compare_data_and_model(data, bill, updated: false)
+    compare_info(data, bill)
 
-    if bill.id?
-      expect(data["id"]).to eq bill.id if bill.id?
-      expect(DateTime.parse(data["created_at"]).to_i).to eq bill.created_at.to_i
+    return unless bill.id?
 
-      if updated
-        expect(DateTime.parse(data["updated_at"]).to_i).to be > bill.updated_at.to_i
-      else
-        expect(DateTime.parse(data["updated_at"]).to_i).to eq bill.updated_at.to_i
-      end
+    expect(data['id']).to eq bill.id if bill.id?
+    expect(DateTime.parse(data['created_at']).to_i).to eq bill.created_at.to_i
+
+    if updated
+      expect(DateTime.parse(data['updated_at']).to_i).to be > bill.updated_at.to_i
+    else
+      expect(DateTime.parse(data['updated_at']).to_i).to eq bill.updated_at.to_i
     end
+  end
+
+  def compare_info(data, bill)
+    expect(data['name']).to eq bill.name
+    expect(data['repetition_type']).to eq bill.repetition_type
+    expect(data['amount_cents']).to eq bill.amount_cents
+    expect(data['payed']).to eq bill.payed
+    expect(data['payment_day']).to eq bill.payment_day
   end
 end

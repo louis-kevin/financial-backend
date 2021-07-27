@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   class AuthenticationController < Api::ApplicationController
     skip_before_action :authenticate_request
@@ -5,9 +7,9 @@ module Api
     def login
       user = User.find_by(email: authenticate_params[:email])
 
-      return invalid_messages email: "Usuário não encontrado" unless user
+      return invalid_messages email: 'Usuário não encontrado' unless user
 
-      return invalid_messages password: "Senha inválida" unless user.authenticate(authenticate_params[:password])
+      return invalid_messages password: 'Senha inválida' unless user.authenticate(authenticate_params[:password])
 
       render json: user_as_json(user)
     end
@@ -34,8 +36,10 @@ module Api
 
     private
 
-    def user_as_json(user, token = true)
-      data = user.as_json(only: [:id, :name, :email], include: { config: { except: [:id, :user_id, :created_at, :updated_at] } })
+    def user_as_json(user, token: true)
+      data = user.as_json(only: %i[id name email],
+                          include: { config: { except: %i[id user_id created_at
+                                                          updated_at] } })
 
       data.merge! token: user.generate_jwt_token if token
 

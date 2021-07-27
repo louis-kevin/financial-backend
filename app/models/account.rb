@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Account < ApplicationRecord
   validates :name, presence: true
   validates :amount_cents, presence: true, numericality: { only_integer: true }

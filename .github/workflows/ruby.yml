@@ -58,7 +58,7 @@ jobs:
         name: Fetching cache for bundle
         with:
           path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock.old') }}
           restore-keys: |
             ${{ runner.os }}-gems-
 

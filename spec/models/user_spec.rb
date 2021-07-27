@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
@@ -34,10 +36,12 @@ RSpec.describe User, type: :model do
         user = User.find_by_jwt_token "Bearer #{token}"
         expect(user).to eq @user
       end
-      it 'without Bearer' do
-        token = @user.generate_jwt_token
-        user = User.find_by_jwt_token token
-        expect(user).to eq @user
+    end
+    context 'should not find user by token' do
+      it 'when there ir no Bearer' do
+          token = @user.generate_jwt_token
+          user = User.find_by_jwt_token token
+          expect(user).to be_nil
       end
     end
   end
