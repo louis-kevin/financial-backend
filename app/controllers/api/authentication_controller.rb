@@ -5,8 +5,8 @@ module Api
     skip_before_action :authenticate_request
 
     def bugsnag
-      Bugsnag.notify('This is a exception')
-      render_json
+      Bugsnag.notify('This is a handled exception')
+      raise 'This is a unhandled exception'
     end
 
     def login
