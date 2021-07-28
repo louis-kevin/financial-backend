@@ -4,6 +4,11 @@ module Api
   class AuthenticationController < Api::ApplicationController
     skip_before_action :authenticate_request
 
+    def bugsnag
+      Bugsnag.notify('This is a exception')
+      render_json
+    end
+
     def login
       user = User.find_by(email: authenticate_params[:email])
 
