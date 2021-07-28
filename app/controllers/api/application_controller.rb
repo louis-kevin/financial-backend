@@ -4,7 +4,6 @@ module Api
   class ApplicationController < ActionController::API
     AUTHORIZATION_HEADER_KEY = 'authorization'
 
-    # noinspection RubyResolve
     before_action :authenticate_request
     attr_reader :current_user
 
