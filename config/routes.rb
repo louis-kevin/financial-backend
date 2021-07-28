@@ -3,8 +3,9 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :api do
+    get '/busgnag',  to: 'authentication#busgnag'
+
     scope '/user' do
-      get '/busgnag',  to: 'authentication#busgnag'
       post '/register', to: 'authentication#register'
       post '/login', to: 'authentication#login'
       post '/reset-password', to: 'authentication#reset_password'
