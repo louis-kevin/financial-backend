@@ -21,7 +21,6 @@ Rails.application.routes.draw do
     resources :account, except: %i[new edit index]
 
     get '/bills', to: 'bill#index'
-    # noinspection RailsParamDefResolve
     resources :bill, except: %i[new edit index]
   end
 end
