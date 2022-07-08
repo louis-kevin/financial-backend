@@ -2,7 +2,7 @@
 
 class CreateAccounts < ActiveRecord::Migration[6.0]
   def change
-    create_table :account do |t|
+    create_table :accounts do |t|
       t.references :user
       t.string :name
       t.string :color
